@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Contact & About — PARAH INTEGRATED FARM'S</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .page-header {
+      background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+      padding: 64px 5% 48px;
+      text-align: center;
+    }
+    .page-header h1 { color: var(--white); font-size: clamp(1.8rem, 4vw, 2.8rem); margin-bottom: 12px; }
+    .page-header p { color: rgba(255,255,255,0.72); font-size: 1rem; }
+
+    /* ABOUT SECTION */
+    .about-section { background: var(--white); }
+    .about-grid {
+      max-width: 1140px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+    }
+
+    .about-text .eyebrow { color: var(--green-light); }
+    .about-text h2 { font-size: clamp(1.6rem, 3vw, 2.2rem); margin-bottom: 18px; }
+    .about-text p { color: var(--text-mid); font-size: 0.95rem; line-height: 1.8; margin-bottom: 16px; }
+
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 28px;
+    }
+
+    .stat-box {
+      background: var(--green-pale);
+      border-radius: var(--radius);
+      padding: 20px;
+      text-align: center;
+    }
+    .stat-box .num {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--green-mid);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+    .stat-box .lbl { font-size: 0.78rem; color: var(--text-mid); font-weight: 500; }
+
+    .about-visual {
+      background: linear-gradient(135deg, var(--green-pale), #b7e4c7);
+      border-radius: 20px;
+      padding: 48px 32px;
+      text-align: center;
+      position: relative;
+    }
+    .farm-emoji-display { font-size: 5rem; margin-bottom: 20px; }
+    .about-visual h3 { color: var(--green-dark); font-size: 1.4rem; margin-bottom: 10px; }
+    .about-visual p { color: var(--text-mid); font-size: 0.88rem; line-height: 1.7; }
+
+    /* CONTACT SECTION */
+    .contact-section { background: var(--off-white); }
+    .contact-grid {
+      max-width: 1140px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 340px 1fr;
+      gap: 40px;
+    }
+
+    .contact-info-card {
+      background: var(--green-dark);
+      border-radius: var(--radius);
+      padding: 36px 28px;
+      color: var(--white);
+    }
+    .contact-info-card h3 {
+      color: var(--white);
+      font-size: 1.3rem;
+      margin-bottom: 8px;
+    }
+    .contact-info-card > p {
+      color: rgba(255,255,255,0.60);
+      font-size: 0.85rem;
+      margin-bottom: 28px;
+      line-height: 1.7;
+    }
+
+    .contact-item {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+      padding: 16px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.10);
+    }
+    .contact-item:last-child { border-bottom: none; }
+
+    .contact-item .icon-box {
+      width: 40px; height: 40px;
+      background: var(--green-mid);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .contact-item .info .label {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.50);
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+    .contact-item .info .value {
+      font-size: 0.88rem;
+      color: var(--white);
+      font-weight: 500;
+    }
+    .contact-item .info a { color: var(--green-light); }
+    .contact-item .info a:hover { color: var(--white); }
+
+    .whatsapp-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      width: 100%;
+      margin-top: 24px;
+      padding: 13px;
+      background: #25D366;
+      color: var(--white);
+      border-radius: var(--radius-sm);
+      font-weight: 600;
+      font-size: 0.92rem;
+      transition: opacity 0.2s;
+    }
+    .whatsapp-btn:hover { opacity: 0.88; }
+
+    .contact-form-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 36px;
+    }
+
+    .contact-form-card h3 { font-size: 1.3rem; margin-bottom: 6px; }
+    .contact-form-card > p { color: var(--text-mid); font-size: 0.88rem; margin-bottom: 24px; }
+
+    .submit-btn { width: 100%; padding: 14px; font-size: 0.96rem; margin-top: 8px; }
+
+    /* MAP PLACEHOLDER */
+    .map-section { background: var(--green-pale); }
+    .map-box {
+      max-width: 1140px;
+      margin: 0 auto;
+      background: var(--white);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      display: grid;
+      grid-template-columns: 1fr 280px;
+    }
+
+    .map-placeholder {
+      height: 320px;
+      background: linear-gradient(135deg, #c8e6c9, #a5d6a7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 10px;
+      font-size: 3rem;
+      color: var(--green-mid);
+    }
+    .map-placeholder p { font-size: 0.88rem; color: var(--text-mid); font-family: 'Inter', sans-serif; }
+
+    .map-info { padding: 36px 28px; }
+    .map-info h4 { font-size: 1.1rem; margin-bottom: 16px; }
+    .map-info-item {
+      display: flex; gap: 10px;
+      font-size: 0.84rem;
+      color: var(--text-mid);
+      margin-bottom: 12px;
+    }
+
+    .hours-grid { margin-top: 16px; }
+    .hour-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.80rem;
+      padding: 6px 0;
+      border-bottom: 1px dashed var(--border);
+      color: var(--text-mid);
+    }
+    .hour-row:last-child { border-bottom: none; }
+    .hour-row .day { font-weight: 500; color: var(--green-dark); }
+
+    @media (max-width: 860px) {
+      .about-grid { grid-template-columns: 1fr; }
+      .contact-grid { grid-template-columns: 1fr; }
+      .map-box { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <a class="nav-logo" href="index.html">
+    <span class="leaf">🌿</span>
+    <div>
+      <span>PARAH INTEGRATED FARM'S</span>
+      <small>Quality From Our Yard To Your Table</small>
+    </div>
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="order.html">Order</a></li>
+    <li><a href="jobs.html">Jobs</a></li>
+    <li><a href="contact.html" class="active">Contact</a></li>
+    <li><a href="order.html" class="nav-cta">Order Now</a></li>
+  </ul>
+  <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <span class="eyebrow" style="color:var(--gold)">🌍 About & Contact</span>
+  <h1>Get In Touch</h1>
+  <p>We're here Monday to Saturday. Reach us by phone, WhatsApp, or the form below.</p>
+</div>
+
+<!-- ABOUT -->
+<section class="section about-section">
+  <div class="about-grid">
+    <div class="about-text">
+      <span class="eyebrow">Our Story</span>
+      <h2>Built on a Simple Belief — Healthy Birds, Healthy People</h2>
+      <p>
+        PARAH INTEGRATED FARM'S was founded with one purpose: to raise quality poultry the right way. We believe that what goes into a bird matters — clean water, balanced feed, proper vaccination, and enough space to grow well.
+      </p>
+      <p>
+        What started as a small backyard farm has grown into a trusted supplier of fresh eggs, live chickens (any breed) and Fish, Rabbit, Somked fish & chicken (well packed and Ganished), Pig, Cow, Duck, Turkey and organic manure for families, restaurants, and fellow farmers across our region.
+      </p>
+      <p>
+        We don't cut corners. Every crate of eggs and every bird that leaves our farm meets the standard we set for our own family's table.
+      </p>
+      <div class="about-stats">
+        <div class="stat-box"><div class="num">1000+</div><div class="lbl">Satisfied Customers</div></div>
+        <div class="stat-box"><div class="num">30+</div><div class="lbl">Years in Business</div></div>
+        <div class="stat-box"><div class="num">2,000+</div><div class="lbl">Birds on Farm</div></div>
+        <div class="stat-box"><div class="num">100%</div><div class="lbl">Natural Feed</div></div>
+      </div>
+    </div>
+
+    <div class="about-visual">
+      <div class="farm-emoji-display">🐔🥚🌿</div>
+      <h3>PARAH INTEGRATED FARM'S</h3>
+      <p>From our family to yours — we raise chickens and eggs the way nature intended. Fresh. Clean. Healthy.</p>
+      <br/>
+      <a href="order.html" class="btn btn-primary">Order Today →</a>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="section contact-section">
+  <div class="container">
+    <span class="eyebrow">Reach Out</span>
+    <h2 class="section-title">Contact Us</h2>
+    <p class="section-sub">Have questions about orders, products, or the farm? Send us a message.</p>
+  </div>
+
+  <div class="contact-grid" style="max-width:1140px;margin:0 auto;">
+    <div class="contact-info-card">
+      <h3>Contact Information</h3>
+      <p>Reach out via any of the channels below or send us a message and we'll get back to you quickly.</p>
+
+      <div class="contact-item">
+        <div class="icon-box">📞</div>
+        <div class="info">
+          <div class="label">Phone</div>
+          <div class="value"><a href="tel:+2348067033288">+234 8067033288</a></div>
+        </div>
+      </div>
+
+      <div class="contact-item">
+        <div class="icon-box">✉️</div>
+        <div class="info">
+          <div class="label">Email</div>
+          <div class="value"><a href="mailto:info@parahventures@gmail.com">info@parahventures@gmail.com</a></div>
+        </div>
+      </div>
+
+      <div class="contact-item">
+        <div class="icon-box">📍</div>
+        <div class="info">
+          <div class="label">Location</div>
+          <div class="value">Farm Address:<br>Behind Sijoye Event Center , Ororuwo, Osun-State, Nigeria</div>
+
+          <div class="value">Office 1:<br>Orita Alabi-Amo P.o.Box 73.Iragbiji, Osun-state</div>
+          <div class="value">Office 2:<br>Opp.Ororuwo Muslim Prayer Ground.</div>
+        </div>
+      </div>
+
+      <div class="contact-item">
+        <div class="icon-box">🕐</div>
+        <div class="info">
+          <div class="label">Hours</div>
+          <div class="value">Mon–Sat, 7:00 AM – 6:00 PM</div>
+        </div>
+      </div>
+
+      <a href="https://wa.me/2349065942822" class="whatsapp-btn" target="_blank">
+        💬 Chat on WhatsApp
+      </a>
+    </div>
+
+    <div class="contact-form-card">
+      <h3>Send a Message</h3>
+      <p>Tell us what you need and we'll respond within 24 hours.</p>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Your Name *</label>
+          <input type="text" id="msgName" placeholder="Full name" required/>
+        </div>
+        <div class="form-group">
+          <label>Phone Number *</label>
+          <input type="tel" id="msgPhone" placeholder="08012345678" required/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Email (optional)</label>
+        <input type="email" id="msgEmail" placeholder="your@email.com"/>
+      </div>
+
+      <div class="form-group">
+        <label>Subject</label>
+        <select id="msgSubject">
+          <option value="">— What is this about? —</option>
+          <option>Product Order Inquiry</option>
+          <option>Pricing & Availability</option>
+          <option>Delivery / Logistics</option>
+          <option>Job Application Follow-up</option>
+          <option>Partnership / Bulk Purchase</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Message *</label>
+        <textarea id="msgBody" rows="5" placeholder="Type your message here..." required></textarea>
+      </div>
+
+      <button class="btn btn-primary submit-btn" onclick="submitMessage()">Send Message →</button>
+    </div>
+  </div>
+</section>
+
+<!-- MAP / LOCATION -->
+<section class="section-sm map-section">
+  <div class="container">
+    <div class="map-box">
+      <div class="map-placeholder">
+        <span>📍</span>
+        <p>Map coming soon — visit us or call for directions</p>
+      </div>
+      <div class="map-info">
+        <h4>Find the Farm</h4>
+        <div class="map-info-item">📍 <span>Behing sijoye event center, Ororuwo,<br/>Osun-State, Nigeria</span></div>
+        <div class="map-info-item">🚗 <span>Easily accessible by road. Call ahead for directions.</span></div>
+        <br/>
+        <strong style="font-size:0.82rem;color:var(--green-dark);">Opening Hours</strong>
+        <div class="hours-grid">
+          <div class="hour-row"><span class="day">Monday – Friday</span><span>7:00 AM – 6:00 PM</span></div>
+          <div class="hour-row"><span class="day">Saturday</span><span>8:00 AM – 6:00 PM</span></div>
+          <div class="hour-row"><span class="day">Sunday</span><span>Closed</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a class="nav-logo" href="index.html">
+        <span class="leaf">🌿</span>
+        <div><span style="color:#fff;font-family:'Playfair Display',serif;font-size:1rem;">PARAH INTEGRATED FARM'S</span></div>
+      </a>
+      <p>Raising healthy poultry the right way — naturally fed, properly vaccinated, fresh from our farm.</p>
+    </div>
+    <div class="footer-col"><h4>Quick Links</h4><ul>
+      <li><a href="index.html">Home</a></li><li><a href="order.html">Order Products</a></li>
+      <li><a href="jobs.html">Job Applications</a></li><li><a href="contact.html">Contact Us</a></li>
+    </ul></div>
+    <div class="footer-col"><h4>Products</h4><ul>
+      <li><a href="order.html">Fresh Eggs</a></li><li><a href="order.html">Live Chickens</a></li>
+      <li><a href="order.html">Rabbit</a></li><li><a href="order.html">Poultry Manure</a></li>
+    </ul></div>
+    <div class="footer-col"><h4>Contact</h4><ul>
+      <li><a href="tel:+2348067033288">📞 +234 08067033288</a></li>
+      <li><a href="mailto:info@parahventures@gmail.com">✉️ info@parahventures@gmail.com</a></li>
+      <li><a href="https://wa.me/2349065942822" target="_blank">💬 WhatsApp Us</a></li>
+    </ul></div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 PARAH INTEGRATED FARM'S. All rights reserved.</span>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // 🔧 REPLACE WITH YOUR FIREBASE CONFIG
+  const firebaseConfig = {
+     apiKey: "AIzaSyDftNbRLydAWxC6p0xLmu2lhT3izgGvvns",
+  authDomain: "parah-integrated-farm-s.firebaseapp.com",
+  projectId: "parah-integrated-farm-s",
+  storageBucket: "parah-integrated-farm-s.firebasestorage.app",
+  messagingSenderId: "529379479635",
+  appId: "1:529379479635:web:5234731e663c529e3676a6"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  window.submitMessage = async function () {
+    const name    = document.getElementById('msgName').value.trim();
+    const phone   = document.getElementById('msgPhone').value.trim();
+    const email   = document.getElementById('msgEmail').value.trim();
+    const subject = document.getElementById('msgSubject').value;
+    const body    = document.getElementById('msgBody').value.trim();
+
+    if (!name || !phone || !body) { showToast('Please fill in all required fields.', 'error'); return; }
+
+    const btn = document.querySelector('.submit-btn');
+    btn.textContent = 'Sending...'; btn.disabled = true;
+
+    try {
+      await addDoc(collection(db, 'messages'), {
+        name, phone, email, subject, message: body,
+        status: 'unread',
+        createdAt: serverTimestamp()
+      });
+
+      showToast('✅ Message sent! We will get back to you soon.', 'success');
+      document.getElementById('msgName').value = '';
+      document.getElementById('msgPhone').value = '';
+      document.getElementById('msgEmail').value = '';
+      document.getElementById('msgSubject').value = '';
+      document.getElementById('msgBody').value = '';
+      btn.textContent = 'Send Message →'; btn.disabled = false;
+    } catch (err) {
+      console.error(err);
+      showToast('Something went wrong. Please try again.', 'error');
+      btn.textContent = 'Send Message →'; btn.disabled = false;
+    }
+  };
+</script>
+
+<script>
+  function toggleMenu() { document.getElementById('navLinks').classList.toggle('open'); }
+
+  function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg; t.className = 'toast ' + type;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 4000);
+  }
+  window.showToast = showToast;
+</script>
+</body>
+</html>

@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Job Applications — PARAH INTEGRATED FARM'S</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .page-header {
+      background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+      padding: 64px 5% 48px;
+      text-align: center;
+    }
+    .page-header h1 { color: var(--white); font-size: clamp(1.8rem, 4vw, 2.8rem); margin-bottom: 12px; }
+    .page-header p { color: rgba(255,255,255,0.72); font-size: 1rem; }
+
+    .jobs-layout {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 56px 5%;
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 40px;
+      align-items: start;
+    }
+
+    /* SIDEBAR */
+    .jobs-sidebar .sidebar-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .sidebar-header {
+      background: var(--green-dark);
+      color: var(--white);
+      padding: 16px 20px;
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+    }
+
+    .sidebar-body { padding: 18px 20px; }
+
+    .perk-item {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.85rem;
+      color: var(--text-mid);
+    }
+    .perk-item:last-child { border-bottom: none; }
+    .perk-item .icon { font-size: 1.1rem; flex-shrink: 0; }
+
+    .open-roles { list-style: none; }
+    .open-roles li {
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.85rem;
+    }
+    .open-roles li:last-child { border-bottom: none; }
+    .open-roles .role-name { font-weight: 600; color: var(--green-dark); }
+    .open-roles .role-type { font-size: 0.74rem; color: var(--text-light); margin-top: 2px; }
+
+    /* FORM */
+    .application-form h2 { font-size: 1.5rem; margin-bottom: 8px; color: var(--green-dark); }
+    .application-form > p { font-size: 0.92rem; color: var(--text-mid); margin-bottom: 28px; }
+
+    .form-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 36px;
+    }
+
+    .form-section-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--green-light);
+      margin-bottom: 16px;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--green-pale);
+      margin-top: 28px;
+    }
+    .form-section-title:first-child { margin-top: 0; }
+
+    .experience-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .exp-option {
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 10px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text-mid);
+    }
+    .exp-option:hover { border-color: var(--green-light); color: var(--green-dark); }
+    .exp-option.selected { background: var(--green-mid); border-color: var(--green-mid); color: var(--white); }
+
+    .availability-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .avail-option {
+      border: 2px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 11px 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--text-mid);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .avail-option:hover { border-color: var(--green-light); }
+    .avail-option.selected { background: var(--green-pale); border-color: var(--green-mid); color: var(--green-dark); }
+
+    .submit-btn {
+      width: 100%;
+      margin-top: 28px;
+      padding: 15px;
+      font-size: 1rem;
+    }
+
+    .success-state {
+      display: none;
+      text-align: center;
+      padding: 48px 24px;
+    }
+    .success-state .big-icon { font-size: 3.5rem; margin-bottom: 16px; }
+    .success-state h3 { font-size: 1.5rem; color: var(--green-dark); margin-bottom: 10px; }
+    .success-state p { color: var(--text-mid); font-size: 0.92rem; line-height: 1.7; }
+
+    @media (max-width: 860px) {
+      .jobs-layout { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 540px) {
+      .experience-grid { grid-template-columns: 1fr 1fr; }
+      .form-card { padding: 22px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <a class="nav-logo" href="index.html">
+    <span class="leaf">🌿</span>
+    <div>
+      <span>PARAH INTEGRATED FARM'S</span>
+      <small>Quality From Our Yard To Your Table</small>
+    </div>
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="order.html">Order</a></li>
+    <li><a href="jobs.html" class="active">Jobs</a></li>
+    <li><a href="contact.html">Contact</a></li>
+    <li><a href="order.html" class="nav-cta">Order Now</a></li>
+  </ul>
+  <div class="hamburger" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <span class="eyebrow" style="color:var(--gold)">💼 Join Our Team</span>
+  <h1>Work With PARAH FARM</h1>
+  <p>We're always looking for hardworking, passionate people to grow with us.</p>
+</div>
+
+<!-- JOBS LAYOUT -->
+<div class="jobs-layout">
+
+  <!-- SIDEBAR -->
+  <div class="jobs-sidebar">
+    <div class="sidebar-card">
+      <div class="sidebar-header">📋 Open Positions</div>
+      <div class="sidebar-body">
+        <ul class="open-roles">
+          <li>
+            <div class="role-name">Farm Worker / Attendant</div>
+            <div class="role-type">Full-time · On-site</div>
+          </li>
+          <li>
+            <div class="role-name">Poultry Health Supervisor</div>
+            <div class="role-type">Full-time · On-site</div>
+          </li>
+          <li>
+            <div class="role-name">Feed & Stock Manager</div>
+            <div class="role-type">Full-time · On-site</div>
+          </li>
+          <li>
+            <div class="role-name">Delivery / Logistics Officer</div>
+            <div class="role-type">Full-time / Part-time</div>
+          </li>
+          <li>
+            <div class="role-name">Sales & Customer Rep</div>
+            <div class="role-type">Part-time · Remote / Hybrid</div>
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="sidebar-card">
+      <div class="sidebar-header">🎁 Why Work With Us</div>
+      <div class="sidebar-body">
+        <div class="perk-item">
+          <span class="icon">💰</span>
+          <span>Competitive and timely salary payments</span>
+        </div>
+        <div class="perk-item">
+          <span class="icon">🌱</span>
+          <span>On-the-job training and skill development</span>
+        </div>
+        <div class="perk-item">
+          <span class="icon">🏡</span>
+          <span>Friendly, safe working environment</span>
+        </div>
+        <div class="perk-item">
+          <span class="icon">📈</span>
+          <span>Growth opportunities as the farm expands</span>
+        </div>
+        <div class="perk-item">
+          <span class="icon">🍗</span>
+          <span>Farm product allowances for staff</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- APPLICATION FORM -->
+  <div class="application-form">
+    <h2>Apply Now</h2>
+    <p>Fill in the form below and we'll review your application and reach out to you.</p>
+
+    <div class="form-card" id="appFormCard">
+
+      <div class="form-section-title">Personal Information</div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>First Name *</label>
+          <input type="text" id="appFirstName" placeholder="First name" required/>
+        </div>
+        <div class="form-group">
+          <label>Last Name *</label>
+          <input type="text" id="appLastName" placeholder="Last name" required/>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Phone Number *</label>
+          <input type="tel" id="appPhone" placeholder="08012345678" required/>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="appEmail" placeholder="your@email.com"/>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Home Address / Location *</label>
+        <input type="text" id="appLocation" placeholder="City, State (e.g. Ibadan, Oyo State)" required/>
+      </div>
+
+      <div class="form-section-title">Position & Experience</div>
+      <div class="form-group">
+        <label>Position You're Applying For *</label>
+        <select id="appPosition">
+          <option value="">— Select a position —</option>
+          <option>Farm Worker / Attendant</option>
+          <option>Poultry Health Supervisor</option>
+          <option>Feed & Stock Manager</option>
+          <option>Delivery / Logistics Officer</option>
+          <option>Sales & Customer Rep</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Years of Farming / Relevant Experience</label>
+        <div class="experience-grid">
+          <div class="exp-option selected" onclick="selectExp(this, 'None / Fresher')">No Experience</div>
+          <div class="exp-option" onclick="selectExp(this, 'Less than 1 year')">< 1 Year</div>
+          <div class="exp-option" onclick="selectExp(this, '1–2 years')">1–2 Years</div>
+          <div class="exp-option" onclick="selectExp(this, '3–5 years')">3–5 Years</div>
+          <div class="exp-option" onclick="selectExp(this, '5+ years')">5+ Years</div>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Highest Qualification</label>
+        <select id="appQualification">
+          <option value="">— Select —</option>
+          <option>No formal education</option>
+          <option>Primary School</option>
+          <option>WAEC / SSCE / NECO</option>
+          <option>OND / NCE</option>
+          <option>HND / B.Sc</option>
+          <option>Postgraduate (M.Sc / MBA)</option>
+        </select>
+      </div>
+
+      <div class="form-section-title">Availability</div>
+      <div class="form-group">
+        <label>When Can You Start?</label>
+        <div class="availability-grid">
+          <div class="avail-option selected" onclick="selectAvail(this, 'Immediately')">⚡ Immediately</div>
+          <div class="avail-option" onclick="selectAvail(this, 'Within 2 weeks')">📅 Within 2 Weeks</div>
+          <div class="avail-option" onclick="selectAvail(this, 'Next month')">🗓️ Next Month</div>
+          <div class="avail-option" onclick="selectAvail(this, 'Flexible')">🔄 Flexible</div>
+        </div>
+      </div>
+
+      <div class="form-section-title">Tell Us More</div>
+      <div class="form-group">
+        <label>Why do you want to work at PARAH FARM? *</label>
+        <textarea id="appMotivation" rows="4" placeholder="Tell us a bit about yourself and why you're interested in this role..." required></textarea>
+      </div>
+      <div class="form-group">
+        <label>Any skills or relevant experience to share?</label>
+        <textarea id="appSkills" rows="3" placeholder="e.g. experience with poultry, driving licence, sales skills..."></textarea>
+      </div>
+
+      <button class="btn btn-primary submit-btn" onclick="submitApplication()">
+        Submit Application →
+      </button>
+    </div>
+
+    <!-- SUCCESS STATE -->
+    <div class="success-state" id="successState">
+      <div class="big-icon">🎉</div>
+      <h3>Application Received!</h3>
+      <p>
+        Thank you for applying to PARAH INTEGRATED FARM'S.<br/>
+        Our team will review your application and reach out to you via phone or WhatsApp within <strong>3–5 working days</strong>.
+      </p>
+      <br/>
+      <a href="index.html" class="btn btn-primary">← Back to Home</a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a class="nav-logo" href="index.html">
+        <span class="leaf">🌿</span>
+        <div><span style="color:#fff;font-family:'Playfair Display',serif;font-size:1rem;">PARAH INTEGRATED FARM'S</span></div>
+      </a>
+      <p>Raising healthy poultry the right way — naturally fed, properly vaccinated, fresh from our farm.</p>
+    </div>
+    <div class="footer-col"><h4>Quick Links</h4><ul>
+      <li><a href="index.html">Home</a></li><li><a href="order.html">Order Products</a></li>
+      <li><a href="jobs.html">Job Applications</a></li><li><a href="contact.html">Contact Us</a></li>
+    </ul></div>
+    <div class="footer-col"><h4>Products</h4><ul>
+      <li><a href="order.html">Fresh Eggs</a></li><li><a href="order.html">Live Chickens</a></li>
+      <li><a href="order.html">Rabbit</a></li><li><a href="order.html">Poultry Manure</a></li>
+    </ul></div>
+    <div class="footer-col"><h4>Contact</h4><ul>
+      <li><a href="tel:+2348067033288">📞 +234 80670233288/a></li>
+      <li><a href="mailto:info@parahventures@gmail.com">✉️ info@parahventures@gmail.com</a></li>
+      <li><a href="https://wa.me/2349065942822" target="_blank">💬 WhatsApp Us</a></li>
+    </ul></div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 PARAH INTEGRATED FARM'S. All rights reserved.</span>
+  </div>
+</footer>
+
+<div class="toast" id="toast"></div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // 🔧 REPLACE WITH YOUR FIREBASE CONFIG
+  const firebaseConfig = {
+     apiKey: "AIzaSyDftNbRLydAWxC6p0xLmu2lhT3izgGvvns",
+  authDomain: "parah-integrated-farm-s.firebaseapp.com",
+  projectId: "parah-integrated-farm-s",
+  storageBucket: "parah-integrated-farm-s.firebasestorage.app",
+  messagingSenderId: "529379479635",
+  appId: "1:529379479635:web:5234731e663c529e3676a6"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  window.submitApplication = async function () {
+    const firstName   = document.getElementById('appFirstName').value.trim();
+    const lastName    = document.getElementById('appLastName').value.trim();
+    const phone       = document.getElementById('appPhone').value.trim();
+    const email       = document.getElementById('appEmail').value.trim();
+    const location    = document.getElementById('appLocation').value.trim();
+    const position    = document.getElementById('appPosition').value;
+    const qual        = document.getElementById('appQualification').value;
+    const motivation  = document.getElementById('appMotivation').value.trim();
+    const skills      = document.getElementById('appSkills').value.trim();
+
+    if (!firstName || !lastName || !phone || !location || !position || !motivation) {
+      showToast('Please fill in all required fields.', 'error'); return;
+    }
+
+    const btn = document.querySelector('.submit-btn');
+    btn.textContent = 'Submitting...'; btn.disabled = true;
+
+    try {
+      await addDoc(collection(db, 'job_applications'), {
+        firstName, lastName, phone, email, location,
+        position,
+        experience:     window._selectedExp || 'None / Fresher',
+        qualification:  qual,
+        availability:   window._selectedAvail || 'Immediately',
+        motivation, skills,
+        status:         'pending',
+        createdAt:      serverTimestamp()
+      });
+
+      document.getElementById('appFormCard').style.display = 'none';
+      document.getElementById('successState').style.display = 'block';
+
+    } catch (err) {
+      console.error(err);
+      showToast('Something went wrong. Please try again.', 'error');
+      btn.textContent = 'Submit Application →'; btn.disabled = false;
+    }
+  };
+</script>
+
+<script>
+  window._selectedExp   = 'None / Fresher';
+  window._selectedAvail = 'Immediately';
+
+  function toggleMenu() { document.getElementById('navLinks').classList.toggle('open'); }
+
+  function selectExp(el, value) {
+    document.querySelectorAll('.exp-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    window._selectedExp = value;
+  }
+
+  function selectAvail(el, value) {
+    document.querySelectorAll('.avail-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    window._selectedAvail = value;
+  }
+
+  function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast ' + type;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 4000);
+  }
+
+  window.showToast = showToast;
+</script>
+</body>
+</html>

@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Order Products — PARAH INTEGRATED FARM'S</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    .page-header {
+      background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+      padding: 64px 5% 48px;
+      text-align: center;
+    }
+    .page-header h1 { color: var(--white); font-size: clamp(1.8rem, 4vw, 2.8rem); margin-bottom: 12px; }
+    .page-header p { color: rgba(255,255,255,0.72); font-size: 1rem; }
+
+    .order-layout {
+      max-width: 1140px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 36px;
+      padding: 56px 5%;
+    }
+
+    /* Product selector */
+    .product-selector h2 { font-size: 1.4rem; margin-bottom: 24px; color: var(--green-dark); }
+
+    .product-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 36px;
+    }
+
+    .product-option {
+      border: 2px solid var(--border);
+      border-radius: var(--radius);
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: var(--white);
+      position: relative;
+    }
+
+    .product-option:hover { border-color: var(--green-light); }
+    .product-option.selected { border-color: var(--green-mid); background: #f0faf3; }
+
+    .product-option .check {
+      position: absolute;
+      top: 12px; right: 12px;
+      width: 22px; height: 22px;
+      border: 2px solid var(--border);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.7rem;
+      color: transparent;
+      transition: all 0.2s;
+    }
+
+    .product-option.selected .check {
+      background: var(--green-mid);
+      border-color: var(--green-mid);
+      color: var(--white);
+    }
+
+    .product-option .icon { font-size: 2rem; margin-bottom: 8px; }
+    .product-option .name { font-weight: 600; font-size: 0.92rem; color: var(--green-dark); margin-bottom: 4px; }
+    .product-option .price { font-size: 0.80rem; color: var(--green-mid); font-weight: 600; }
+    .product-option .desc { font-size: 0.76rem; color: var(--text-light); margin-top: 4px; }
+
+    /* Quantity picker */
+    .qty-group { margin-bottom: 28px; }
+    .qty-group label { font-size: 0.85rem; font-weight: 600; color: var(--text-mid); margin-bottom: 10px; display: block; }
+
+    .qty-picker {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      width: fit-content;
+    }
+
+    .qty-btn {
+      width: 44px; height: 44px;
+      background: var(--off-white);
+      border: none;
+      font-size: 1.2rem;
+      cursor: pointer;
+      color: var(--green-dark);
+      transition: background 0.15s;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .qty-btn:hover { background: var(--green-pale); }
+
+    #qtyDisplay {
+      width: 60px;
+      height: 44px;
+      border: none;
+      border-left: 1.5px solid var(--border);
+      border-right: 1.5px solid var(--border);
+      text-align: center;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--green-dark);
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* Form section */
+    .order-form-section h2 { font-size: 1.4rem; margin-bottom: 24px; color: var(--green-dark); }
+    .order-form-section .card { padding: 28px; }
+
+    /* Order summary */
+    .order-summary {
+      position: sticky;
+      top: 88px;
+    }
+
+    .summary-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .summary-header {
+      background: var(--green-dark);
+      color: var(--white);
+      padding: 20px 24px;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+    }
+
+    .summary-body { padding: 24px; }
+
+    .summary-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 0;
+      font-size: 0.88rem;
+      border-bottom: 1px solid var(--border);
+    }
+    .summary-row:last-of-type { border-bottom: none; }
+
+    .summary-row .label { color: var(--text-mid); }
+    .summary-row .value { font-weight: 600; color: var(--green-dark); }
+
+    .summary-total {
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 2px solid var(--green-pale);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .summary-total .label { font-weight: 600; font-size: 1rem; color: var(--green-dark); }
+    .summary-total .value {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      color: var(--green-mid);
+      font-weight: 700;
+    }
+
+    .submit-order {
+      width: 100%;
+      margin-top: 20px;
+      padding: 15px;
+      font-size: 1rem;
+    }
+
+    .payment-note {
+      margin-top: 14px;
+      font-size: 0.76rem;
+      color: var(--text-light);
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    .delivery-toggle {
+      display: flex;
+      gap: 0;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+    .delivery-toggle button {
+      flex: 1;
+      padding: 11px;
+      border: none;
+      background: var(--off-white);
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      color: var(--text-mid);
+      transition: all 0.2s;
+    }
+    .delivery-toggle button.active {
+      background: var(--green-mid);
+      color: var(--white);
+      font-weight: 600;
+    }
+
+    @media (max-width: 900px) {
+      .order-layout { grid-template-columns: 1fr; }
+      .order-summary { position: static; }
+    }
+    @media (max-width: 540px) {
+      .product-options { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <a class="nav-logo" href="index.html">
+    <span class="leaf">🌿</span>
+    <div>
+      <span>PARAH INTEGRATED FARM'S</span>
+      <small>Quality From Our Yard To Your Table</small>
+    </div>
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="order.html" class="active">Order</a></li>
+    <li><a href="jobs.html">Jobs</a></li>
+    <li><a href="contact.html">Contact</a></li>
+    <li><a href="order.html" class="nav-cta">Order Now</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <span class="eyebrow" style="color:var(--gold)">🛒 Fresh Farm Products</span>
+  <h1>Place Your Order</h1>
+  <p>Choose your product, fill in your details, and we'll get it to you fresh.</p>
+</div>
+
+<!-- ORDER LAYOUT -->
+<div class="order-layout">
+
+  <!-- LEFT SIDE -->
+  <div>
+    <!-- Product Selection -->
+    <section>
+      <h2>1. Choose a Product</h2>
+      <div class="product-options">
+        <div class="product-option selected" onclick="selectProduct(this, 'Fresh Table Eggs', 5500, '₦5,500 / crate')">
+          <div class="check">✓</div>
+          <div class="icon">🥚</div>
+          <div class="name">Fresh Table Eggs</div>
+          <div class="price">₦5,500 / crate, Small size</div>
+          <div class="desc">30 eggs per crate, collected daily</div>
+        </div>
+        <div class="product-option selected" onclick="selectProduct(this, 'Fresh Table Eggs', 6000, '₦6,000 / crate')">
+          <div class="check">✓</div>
+          <div class="icon">🥚</div>
+          <div class="name">Fresh Table Eggs</div>
+          <div class="price">₦6,000 / crate, Medium size</div>
+          <div class="desc">30 eggs per crate, collected daily</div>
+        </div>
+        <div class="product-option selected" onclick="selectProduct(this, 'Fresh Table Eggs', 6400, '₦6,400 / crate')">
+          <div class="check">✓</div>
+          <div class="icon">🥚</div>
+          <div class="name">Fresh Table Eggs</div>
+          <div class="price">₦6,400 / crate, Big size</div>
+          <div class="desc">30 eggs per crate, collected daily</div>
+        </div>
+        <div class="product-option" onclick="selectProduct(this, 'Live Broiler Chicken', 5500, '₦5,500 / bird')">
+          <div class="check">✓</div>
+          <div class="icon">🐔</div>
+          <div class="name">Live Broiler Chicken</div>
+          <div class="price">₦5,000 / bird</div>
+          <div class="desc">Avg. 3kg, well-fed and healthy</div>
+        </div>
+        <div class="product-option" onclick="selectProduct(this, 'Rabbit', 8000, '₦8000 / Rabbit')">
+          <div class="check">✓</div>
+          <div class="icon">🐇</div>
+          <div class="name">Rabbit</div>
+          <div class="price">₦8000 / chick</div>
+          <div class="desc">Vaccinated, healthy DOC</div>
+        </div>
+        <div class="product-option" onclick="selectProduct(this, 'Fish', 3500, '₦3500 / Fish')">
+          <div class="check">✓</div>
+          <div class="icon">🐟</div>
+          <div class="name">Fish</div>
+          <div class="price">₦3500 per/ K.g</div>
+          <div class="desc">Avg. 1.5k.g, Well-fed and healthy</div>
+        </div>
+        <div class="product-option" onclick="selectProduct(this, 'Turkey', 5000, '₦5000 / Turkey')">
+          <div class="check">✓</div>
+          <div class="icon">🦃</div>
+          <div class="name">Turkey</div>
+          <div class="price">₦10,000 / for local breeds </div>
+          <div class="desc">Vaccinated, healthy</div>
+        </div>
+        <div class="product-option" onclick="selectProduct(this, 'Turkey', 50000, '₦50000 / Turkey')">
+          <div class="check">✓</div>
+          <div class="icon">🦃</div>
+          <div class="name">Turkey</div>
+          <div class="price">₦50,000 / for Imported breeds</div>
+          <div class="desc">Vaccinated, healthy</div>
+        </div>
+        <div class="product-option" onclick="selectProduct(this, 'Duck', 1000, '₦1000 / Duck')">
+          <div class="check">✓</div>
+          <div class="icon">🦆</div>
+          <div class="name">Duck</div>
+          <div class="price">₦1000 / Duck</div>
+          <div class="desc">Vaccinated, healthy</div>
+        </div>
+        <div class="product-option" onclick="selectProduct(this, 'Pig', 250000, '₦250,000 / Pig')">
+          <div class="check">✓</div>
+          <div class="icon">🐐 </div>
+          <div class="name">Goat</div>
+          <div class="price">₦200,000 lowest Price</div>
+          <div class="desc">Well-fed, Vaccinated, healthy </div>
+        </div>
+        <div class="product-option" onclick="selectProduct(this, 'Pig', 900000, '₦900,000 / Pig')">
+          <div class="check">✓</div>
+          <div class="icon">🐄</div>
+          <div class="name">Cow</div>
+          <div class="price">₦900,000 lowest price</div>
+          <div class="desc">Well-fed, Vaccinated, healthy </div>
+        </div>
+          <div class="product-option" onclick="selectProduct(this, 'Pig', 320000, '₦320,000 / Pig')">
+          <div class="check">✓</div>
+          <div class="icon">🐖</div>
+          <div class="name">Pig</div>
+          <div class="price">₦320,000 according to weight</div>
+          <div class="desc">Well-fed, Vaccinated, healthy </div>
+        </div>
+        <div class="product-option" onclick="selectProduct(this, 'Turkey', 75, '₦75 / Turkey')">
+          <div class="check">✓</div>
+          <div class="icon">🐟</div>
+          <div class="name">Fingerling</div>
+          <div class="price">₦75 per one </div>
+          <div class="desc">well feed</div>
+        </div>
+        <div class="product-option" onclick="selectProduct(this, 'Feeder & Drinker', 15000, '₦15,000 / both')">
+          <div class="check">✓</div>
+          <div class="icon">🐟</div>
+          <div class="name">Feeder & Drinker </div>
+          <div class="price">₦15,000 for both </div>
+          <div class="desc">Easy to use</div>
+        </div>
+        <div class="product-option" onclick="selectProduct(this, 'Smoked Fish', 8000, '₦8,000 / Smoked Fish')">
+          <div class="check">✓</div>
+          <div class="icon">🐠</div>
+          <div class="name">Smoked Fish</div>
+          <div class="price">₦8,000 per packed </div>
+          <div class="desc">Well Packed,Ganished</div>
+        </div>
+        <div class="product-option" onclick="selectProduct(this, 'Smoked Chicken', 10000, '₦10,000 / Smoked Chicken')">
+          <div class="check">✓</div>
+          <div class="icon"> 🍗 </div>
+          <div class="name">Smoked Chicken</div>
+          <div class="price">₦10,000 per packed </div>
+          <div class="desc">Well Packed,Ganished</div>
+        </div>
+        <div class="product-option" onclick="selectProduct(this, 'Smoked Fish', 3000, '₦3,000 / Snail')">
+          <div class="check">✓</div>
+          <div class="icon">🐌 </div>
+          <div class="name">Snail</div>
+          <div class="price">₦3,000 </div>
+          <div class="desc">Well-feed & Highly rich</div>
+        </div>
+        <div class="product-option" onclick="selectProduct(this, 'Organic Poultry Manure', 3000, '₦3,000 / bag')">
+          <div class="check">✓</div>
+          <div class="icon">🌾</div>
+          <div class="name">Poultry Manure</div>
+          <div class="price">₦3,000 / bag</div>
+          <div class="desc">50kg bag, organic fertilizer</div>
+        </div>
+      </div>
+
+      <div class="qty-group">
+        <label>2. Choose Quantity</label>
+        <div class="qty-picker">
+          <button class="qty-btn" onclick="changeQty(-1)">−</button>
+          <input type="number" id="qtyDisplay" value="1" min="1" max="500" onchange="updateQty()"/>
+          <button class="qty-btn" onclick="changeQty(1)">+</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Customer Details -->
+    <section class="order-form-section">
+      <h2>3. Your Details</h2>
+      <div class="card">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Full Name *</label>
+            <input type="text" id="custName" placeholder="Enter your full name" required/>
+          </div>
+          <div class="form-group">
+            <label>Phone Number *</label>
+            <input type="tel" id="custPhone" placeholder="e.g. 08012345678" required/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Email Address</label>
+          <input type="email" id="custEmail" placeholder="your@email.com"/>
+        </div>
+
+        <div class="form-group">
+          <label>Delivery Method</label>
+          <div class="delivery-toggle">
+            <button class="active" id="btnPickup" onclick="setDelivery('pickup')">🏠 Farm Pickup</button>
+            <button id="btnDeliver" onclick="setDelivery('delivery')">🚚 Home Delivery</button>
+          </div>
+        </div>
+
+        <div class="form-group" id="addressGroup" style="display:none">
+          <label>Delivery Address *</label>
+          <textarea id="custAddress" placeholder="Enter your full delivery address..."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Additional Notes (optional)</label>
+          <textarea id="custNotes" placeholder="Any special instructions or requests..."></textarea>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ORDER SUMMARY -->
+  <div class="order-summary">
+    <div class="summary-card">
+      <div class="summary-header">📋 Order Summary</div>
+      <div class="summary-body">
+        <div class="summary-row">
+          <span class="label">Product</span>
+          <span class="value" id="sumProduct">Fresh Table Eggs</span>
+        </div>
+        <div class="summary-row">
+          <span class="label">Unit Price</span>
+          <span class="value" id="sumUnit">₦1,500</span>
+        </div>
+        <div class="summary-row">
+          <span class="label">Quantity</span>
+          <span class="value" id="sumQty">1</span>
+        </div>
+        <div class="summary-row">
+          <span class="label">Delivery</span>
+          <span class="value" id="sumDelivery">Farm Pickup</span>
+        </div>
+        <div class="summary-total">
+          <span class="label">Total</span>
+          <span class="value" id="sumTotal">₦1,500</span>
+        </div>
+
+        <button class="btn btn-gold submit-order" onclick="proceedtopayment()">
+          Proceed to Payment →
+        </button>
+        <p class="payment-note">
+          After confirming, our team will contact you via WhatsApp or phone to arrange your order for pickup/delivery.
+          Note that: "Delivery may take some hours depending on location".
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a class="nav-logo" href="index.html">
+        <span class="leaf">🌿</span>
+        <div><span style="color:#fff;font-family:'Playfair Display',serif;font-size:1rem;">PARAH INTEGRATED FARM'S</span></div>
+      </a>
+      <p>Raising healthy poultry the right way — naturally fed, properly vaccinated, fresh from our farm.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="order.html">Order Products</a></li>
+        <li><a href="jobs.html">Job Applications</a></li>
+        <li><a href="contact.html">Contact Us</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Products</h4>
+      <ul>
+        <li><a href="order.html">Fresh Eggs</a></li>
+        <li><a href="order.html">Live Chickens</a></li>
+        <li><a href="order.html">Rabbit</a></li>
+        <li><a href="order.html">Poultry Manure</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="tel:+2348067033288">📞 +234 8067033288</a></li>
+        <li><a href="mailto:info@parahventures@gmail.com">✉️ info@parahventures@gmail.com</a></li>
+        <li><a href="https://wa.me/2349065942822" target="_blank">💬 WhatsApp Us</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 PARAH INTEGRATED FARM'S. All rights reserved.</span>
+  </div>
+</footer>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+  // Builds the pending order from the form and hands off to the payment page.
+  window.proceedtopayment = function () {
+    const name    = document.getElementById('custName').value.trim();
+    const phone   = document.getElementById('custPhone').value.trim();
+    const email   = document.getElementById('custEmail').value.trim();
+    const notes   = document.getElementById('custNotes').value.trim();
+    const address = document.getElementById('custAddress').value.trim();
+
+    if (!name || !phone) { showToast('Please fill in your name and phone number.', 'error'); return; }
+    if (window._delivery === 'delivery' && !address) { showToast('Please enter your delivery address.', 'error'); return; }
+
+    const qty   = parseInt(document.getElementById('qtyDisplay').value) || 1;
+    const total = window._unitPrice * qty;
+
+    const btn = document.querySelector('.submit-order');
+    btn.textContent = 'Redirecting to payment...';
+    btn.disabled = true;
+
+    const pendingOrder = {
+      items: [{
+        icon: window._selectedIcon || '📦',
+        name: window._selectedProduct,
+        price: window._unitPrice,
+        qty: qty
+      }],
+      subtotal: total,
+      total: total,
+      delivery: window._delivery || 'pickup',
+      customerName: name,
+      phone: phone,
+      email: email,
+      address: address,
+      notes: notes
+    };
+
+    localStorage.setItem('parahPendingOrder', JSON.stringify(pendingOrder));
+    window.location.href = 'payment.html';
+  };
+</script>
+
+<script>
+  // State
+  window._selectedProduct = 'Fresh Table Eggs';
+  window._unitPrice = 1500;
+  window._selectedIcon = '🥚';
+  window._delivery = 'pickup';
+
+  function toggleMenu() {
+    document.getElementById('navLinks').classList.toggle('open');
+  }
+
+  function selectProduct(el, name, price, priceLabel) {
+    document.querySelectorAll('.product-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    window._selectedProduct = name;
+    window._unitPrice = price;
+    window._selectedIcon = el.querySelector('.icon').textContent.trim();
+    document.getElementById('sumProduct').textContent = name;
+    document.getElementById('sumUnit').textContent = priceLabel;
+    updateTotal();
+  }
+
+  function changeQty(delta) {
+    const el = document.getElementById('qtyDisplay');
+    el.value = Math.max(1, parseInt(el.value || 1) + delta);
+    updateQty();
+  }
+
+  function updateQty() {
+    const q = parseInt(document.getElementById('qtyDisplay').value) || 1;
+    document.getElementById('sumQty').textContent = q;
+    updateTotal();
+  }
+
+  function updateTotal() {
+    const q     = parseInt(document.getElementById('qtyDisplay').value) || 1;
+    const total = window._unitPrice * q;
+    document.getElementById('sumTotal').textContent = '₦' + total.toLocaleString();
+  }
+
+  function setDelivery(type) {
+    window._delivery = type;
+    document.getElementById('btnPickup').classList.toggle('active', type === 'pickup');
+    document.getElementById('btnDeliver').classList.toggle('active', type === 'delivery');
+    document.getElementById('addressGroup').style.display = type === 'delivery' ? 'block' : 'none';
+    document.getElementById('sumDelivery').textContent = type === 'pickup' ? 'Farm Pickup' : 'Home Delivery';
+  }
+
+  function showToast(msg, type = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = 'toast ' + type;
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 4000);
+  }
+
+  window.showToast = showToast;
+</script>
+</body>
+</html>

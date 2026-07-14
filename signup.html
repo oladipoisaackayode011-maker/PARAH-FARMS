@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign Up — PARAH INTEGRATED FARM'S</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 100%);
+      display: flex; flex-direction: column;
+    }
+    .auth-wrap {
+      flex: 1; display: flex; align-items: center;
+      justify-content: center; padding: 40px 16px;
+    }
+    .auth-card {
+      background: var(--white); border-radius: 20px;
+      padding: 44px 40px; width: 100%; max-width: 440px;
+      box-shadow: 0 24px 64px rgba(0,0,0,0.22);
+    }
+    .auth-logo { text-align: center; margin-bottom: 28px; }
+    .auth-logo .icon { font-size: 2.8rem; }
+    .auth-logo h2 { font-size: 1.5rem; color: var(--green-dark); margin: 8px 0 4px; }
+    .auth-logo p  { font-size: 0.83rem; color: var(--text-light); }
+
+    .google-btn {
+      width: 100%; padding: 12px 16px;
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      border: 2px solid var(--border); border-radius: var(--radius-sm);
+      background: var(--white); font-size: 0.92rem; font-weight: 600;
+      color: var(--text-dark); cursor: pointer; transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+    .google-btn:hover { background: var(--off-white); border-color: #bbb; }
+
+    .divider {
+      display: flex; align-items: center; gap: 12px;
+      margin: 20px 0; color: var(--text-light); font-size: 0.78rem;
+    }
+    .divider::before, .divider::after {
+      content: ''; flex: 1; height: 1px; background: var(--border);
+    }
+
+    .pw-wrap { position: relative; }
+    .pw-wrap input { width: 100%; padding-right: 44px; }
+    .pw-eye {
+      position: absolute; right: 12px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; font-size: 1rem;
+      color: var(--text-light); padding: 0;
+    }
+
+    .pw-strength { margin-top: 6px; height: 4px; border-radius: 4px; background: var(--border); overflow: hidden; }
+    .pw-strength-bar { height: 100%; width: 0; border-radius: 4px; transition: all 0.3s; }
+    .pw-hint { font-size: 0.72rem; color: var(--text-light); margin-top: 4px; }
+
+    .terms {
+      display: flex; align-items: flex-start; gap: 10px;
+      font-size: 0.80rem; color: var(--text-mid); margin: 14px 0;
+    }
+    .terms input[type="checkbox"] { margin-top: 2px; accent-color: var(--green-mid); flex-shrink: 0; }
+
+    .submit-btn { width: 100%; padding: 13px; font-size: 0.96rem; }
+
+    .auth-switch {
+      text-align: center; margin-top: 22px;
+      font-size: 0.84rem; color: var(--text-mid);
+    }
+    .auth-switch a { color: var(--green-mid); font-weight: 600; }
+
+    .err-box {
+      background: #fce4ec; color: #c62828; border-radius: 8px;
+      padding: 10px 14px; font-size: 0.82rem; margin-bottom: 16px; display: none;
+    }
+    .ok-box {
+      background: var(--green-pale); color: var(--green-mid); border-radius: 8px;
+      padding: 10px 14px; font-size: 0.82rem; margin-bottom: 16px; display: none;
+    }
+
+    .perks {
+      display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 22px; justify-content: center;
+    }
+    .perk-tag {
+      background: var(--green-pale); color: var(--green-mid);
+      font-size: 0.72rem; font-weight: 600; padding: 4px 10px; border-radius: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">
+    <span class="leaf">🌿</span>
+    <div>
+      <span>PARAH INTEGRATED FARM'S</span>
+      <small>Quality From Our Yard To Your Table</small>
+    </div>
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="order.html">Order</a></li>
+    <li><a href="jobs.html">Jobs</a></li>
+    <li><a href="contact.html">Contact</a></li>
+    <li><a href="login.html" class="nav-cta">Login</a></li>
+  </ul>
+  <div class="hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<div class="auth-wrap">
+  <div class="auth-card">
+
+    <div class="auth-logo">
+      <div class="icon">🌿</div>
+      <h2>Create an Account</h2>
+      <p>Join PARAH FARM — it's free!</p>
+    </div>
+
+    <div class="perks">
+      <span class="perk-tag">✅ Track Orders</span>
+      <span class="perk-tag">🔔 Get Updates</span>
+      <span class="perk-tag">⚡ Fast Checkout</span>
+    </div>
+
+    <div class="err-box" id="errBox"></div>
+    <div class="ok-box"  id="okBox"></div>
+
+    <!-- Google -->
+    <button class="google-btn" onclick="googleSignup()">
+      <svg width="20" height="20" viewBox="0 0 48 48">
+        <path fill="#EA4335" d="M24 9.5c3.5 0 6.6 1.2 9 3.2l6.7-6.7C35.7 2.5 30.2 0 24 0 14.6 0 6.6 5.4 2.7 13.3l7.8 6C12.4 13 17.8 9.5 24 9.5z"/>
+        <path fill="#4285F4" d="M46.6 24.5c0-1.6-.1-3.1-.4-4.5H24v8.5h12.7c-.6 3-2.3 5.5-4.8 7.2l7.5 5.8c4.4-4 6.9-10 6.9-17z"/>
+        <path fill="#FBBC05" d="M10.5 28.7A14.5 14.5 0 0 1 9.5 24c0-1.6.3-3.2.8-4.7l-7.8-6A24 24 0 0 0 0 24c0 3.9.9 7.5 2.7 10.7l7.8-6z"/>
+        <path fill="#34A853" d="M24 48c6.2 0 11.4-2 15.2-5.5l-7.5-5.8c-2 1.4-4.6 2.3-7.7 2.3-6.2 0-11.5-4.2-13.4-9.9l-7.8 6C6.6 42.6 14.6 48 24 48z"/>
+      </svg>
+      Sign Up with Google
+    </button>
+
+    <div class="divider">or sign up with email</div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>First Name *</label>
+        <input type="text" id="firstName" placeholder="First name"/>
+      </div>
+      <div class="form-group">
+        <label>Last Name *</label>
+        <input type="text" id="lastName" placeholder="Last name"/>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Phone Number</label>
+      <input type="tel" id="phone" placeholder="08012345678"/>
+    </div>
+
+    <div class="form-group">
+      <label>Email Address *</label>
+      <input type="email" id="email" placeholder="your@email.com"/>
+    </div>
+
+    <div class="form-group">
+      <label>Password *</label>
+      <div class="pw-wrap">
+        <input type="password" id="password" placeholder="Create a password (min. 6 chars)"
+               oninput="checkStrength(this.value)"/>
+        <button class="pw-eye" onclick="togglePw('password',this)">👁</button>
+      </div>
+      <div class="pw-strength"><div class="pw-strength-bar" id="strengthBar"></div></div>
+      <div class="pw-hint" id="strengthHint">Enter a password</div>
+    </div>
+
+    <div class="form-group">
+      <label>Confirm Password *</label>
+      <div class="pw-wrap">
+        <input type="password" id="confirmPassword" placeholder="Re-enter your password"/>
+        <button class="pw-eye" onclick="togglePw('confirmPassword',this)">👁</button>
+      </div>
+    </div>
+
+    <div class="terms">
+      <input type="checkbox" id="terms"/>
+      <label for="terms">
+        I agree to PARAH FARM's <a href="contact.html" style="color:var(--green-mid);">terms of service</a>
+        and consent to receiving order updates.
+      </label>
+    </div>
+
+    <button class="btn btn-primary submit-btn" onclick="emailSignup()">Create Account →</button>
+
+    <div class="auth-switch">
+      Already have an account? <a href="login.html">Sign In</a>
+    </div>
+
+  </div>
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import {
+    getAuth, createUserWithEmailAndPassword, updateProfile,
+    signInWithPopup, GoogleAuthProvider, onAuthStateChanged
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import {
+    getFirestore, doc, setDoc, serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // 🔧 REPLACE WITH YOUR FIREBASE CONFIG
+  const firebaseConfig = {
+     apiKey: "AIzaSyDftNbRLydAWxC6p0xLmu2lhT3izgGvvns",
+  authDomain: "parah-integrated-farm-s.firebaseapp.com",
+  projectId: "parah-integrated-farm-s",
+  storageBucket: "parah-integrated-farm-s.firebasestorage.app",
+  messagingSenderId: "529379479635",
+  appId: "1:529379479635:web:5234731e663c529e3676a6"
+  };
+
+  const app      = initializeApp(firebaseConfig);
+  const auth     = getAuth(app);
+  const db       = getFirestore(app);
+  const provider = new GoogleAuthProvider();
+
+  onAuthStateChanged(auth, user => {
+    if (user) window.location.href = 'profile.html';
+  });
+
+  window.emailSignup = async function() {
+    const firstName = document.getElementById('firstName').value.trim();
+    const lastName  = document.getElementById('lastName').value.trim();
+    const phone     = document.getElementById('phone').value.trim();
+    const email     = document.getElementById('email').value.trim();
+    const password  = document.getElementById('password').value;
+    const confirm   = document.getElementById('confirmPassword').value;
+    const agreed    = document.getElementById('terms').checked;
+
+    if (!firstName || !lastName) { showErr('Please enter your first and last name.'); return; }
+    if (!email)    { showErr('Please enter your email address.'); return; }
+    if (!password) { showErr('Please create a password.'); return; }
+    if (password.length < 6) { showErr('Password must be at least 6 characters.'); return; }
+    if (password !== confirm)  { showErr('Passwords do not match.'); return; }
+    if (!agreed)   { showErr('Please agree to the terms to continue.'); return; }
+
+    const btn = document.querySelector('.submit-btn');
+    btn.textContent = 'Creating account...'; btn.disabled = true;
+
+    try {
+      const cred = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(cred.user, { displayName: firstName + ' ' + lastName });
+
+      // Save user profile to Firestore
+      await setDoc(doc(db, 'users', cred.user.uid), {
+        firstName, lastName, phone, email,
+        displayName: firstName + ' ' + lastName,
+        role: 'customer',
+        createdAt: serverTimestamp()
+      });
+
+      window.location.href = 'profile.html';
+    } catch(e) {
+      showErr(niceError(e.code));
+      btn.textContent = 'Create Account →'; btn.disabled = false;
+    }
+  };
+
+  window.googleSignup = async function() {
+    try {
+      const cred = await signInWithPopup(auth, provider);
+      const user = cred.user;
+      // Save to Firestore if new user
+      await setDoc(doc(db, 'users', user.uid), {
+        displayName: user.displayName,
+        email: user.email,
+        phone: user.phoneNumber || '',
+        role: 'customer',
+        createdAt: serverTimestamp()
+      }, { merge: true });
+    } catch(e) { showErr(niceError(e.code)); }
+  };
+
+  function showErr(msg) {
+    document.getElementById('errBox').textContent = msg;
+    document.getElementById('errBox').style.display = 'block';
+    document.getElementById('okBox').style.display  = 'none';
+  }
+  function niceError(code) {
+    return {
+      'auth/email-already-in-use': 'An account with this email already exists. Try logging in.',
+      'auth/invalid-email':        'Please enter a valid email address.',
+      'auth/weak-password':        'Password is too weak. Use at least 6 characters.',
+      'auth/popup-closed-by-user': 'Google sign-up was cancelled.',
+    }[code] || 'Something went wrong. Please try again.';
+  }
+</script>
+
+<script>
+  function togglePw(id, btn) {
+    const el = document.getElementById(id);
+    el.type = el.type === 'password' ? 'text' : 'password';
+    btn.textContent = el.type === 'password' ? '👁' : '🙈';
+  }
+
+  function checkStrength(val) {
+    const bar  = document.getElementById('strengthBar');
+    const hint = document.getElementById('strengthHint');
+    let score = 0;
+    if (val.length >= 6)  score++;
+    if (val.length >= 10) score++;
+    if (/[A-Z]/.test(val)) score++;
+    if (/[0-9]/.test(val)) score++;
+    if (/[^A-Za-z0-9]/.test(val)) score++;
+
+    const levels = [
+      { w:'0%',   color:'transparent', text:'Enter a password' },
+      { w:'25%',  color:'#e53935',     text:'Weak' },
+      { w:'50%',  color:'#fb8c00',     text:'Fair' },
+      { w:'75%',  color:'#fdd835',     text:'Good' },
+      { w:'100%', color:'#43a047',     text:'Strong 💪' },
+    ];
+    const lvl = levels[Math.min(score, 4)];
+    bar.style.width = lvl.w;
+    bar.style.background = lvl.color;
+    hint.textContent = lvl.text;
+    hint.style.color = lvl.color === 'transparent' ? 'var(--text-light)' : lvl.color;
+  }
+  window.checkStrength = checkStrength;
+</script>
+</body>
+</html>

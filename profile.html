@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Profile — PARAH INTEGRATED FARM'S</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    body { background: var(--off-white); }
+    .profile-header {
+      background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+      padding: 48px 5% 64px;
+    }
+    .profile-header-inner {
+      max-width: 900px; margin: 0 auto;
+      display: flex; align-items: center; gap: 24px;
+    }
+    .avatar-circle {
+      width: 72px; height: 72px; border-radius: 50%;
+      background: rgba(255,255,255,0.2); border: 3px solid rgba(255,255,255,0.5);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.8rem; color: var(--white); font-weight: 700; flex-shrink: 0;
+      font-family: 'Playfair Display', serif;
+    }
+    .profile-header h2 { color: var(--white); font-size: 1.5rem; margin-bottom: 4px; }
+    .profile-header p  { color: rgba(255,255,255,0.70); font-size: 0.85rem; }
+
+    .profile-body {
+      max-width: 900px; margin: -32px auto 48px;
+      padding: 0 5%; display: grid;
+      grid-template-columns: 280px 1fr; gap: 24px; align-items: start;
+    }
+
+    .profile-card {
+      background: var(--white); border-radius: var(--radius);
+      box-shadow: var(--shadow); overflow: hidden;
+    }
+
+    .pc-header {
+      background: var(--green-dark); color: var(--white);
+      padding: 16px 20px; font-family: 'Playfair Display', serif; font-size: 1rem;
+    }
+    .pc-body { padding: 20px; }
+
+    .profile-info-item {
+      display: flex; flex-direction: column;
+      padding: 10px 0; border-bottom: 1px solid var(--border);
+    }
+    .profile-info-item:last-child { border-bottom: none; }
+    .pii-label { font-size: 0.70rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-light); margin-bottom: 2px; }
+    .pii-value { font-size: 0.88rem; color: var(--text-dark); font-weight: 500; }
+
+    .logout-btn {
+      width: 100%; margin-top: 18px; padding: 11px;
+      background: #fce4ec; color: #c62828; border: none;
+      border-radius: var(--radius-sm); font-weight: 600; font-size: 0.88rem;
+      cursor: pointer; transition: opacity 0.2s; font-family: 'Inter', sans-serif;
+    }
+    .logout-btn:hover { opacity: 0.80; }
+
+    .orders-section h3 { font-size: 1.1rem; color: var(--green-dark); margin-bottom: 16px; }
+
+    .empty-orders {
+      text-align: center; padding: 48px 24px;
+      color: var(--text-light); font-size: 0.88rem;
+    }
+    .empty-orders .big { font-size: 3rem; margin-bottom: 12px; }
+
+    .order-row {
+      background: var(--white); border-radius: var(--radius);
+      box-shadow: var(--shadow); padding: 18px 20px; margin-bottom: 14px;
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+    }
+    .order-row .or-product { font-weight: 600; font-size: 0.92rem; color: var(--green-dark); }
+    .order-row .or-date    { font-size: 0.78rem; color: var(--text-light); margin-top: 2px; }
+    .order-row .or-total   { font-family: 'Playfair Display', serif; font-size: 1.1rem; color: var(--green-mid); font-weight: 700; }
+
+    .status-badge { display:inline-flex; align-items:center; padding:3px 9px; border-radius:20px; font-size:0.70rem; font-weight:600; }
+    .sb-pending   { background:#fff8e1; color:#f57f17; }
+    .sb-confirmed { background:#e8f5e9; color:#2e7d32; }
+    .sb-completed { background:#e3f2fd; color:#1565c0; }
+    .sb-cancelled { background:#fce4ec; color:#c62828; }
+
+    @media(max-width:720px){
+      .profile-body { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="index.html">
+    <span class="leaf">🌿</span>
+    <div>
+      <span>PARAH INTEGRATED FARM'S</span>
+      <small>Quality From Our Yard To Your Table</small>
+    </div>
+  </a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="order.html">Order</a></li>
+    <li><a href="jobs.html">Jobs</a></li>
+    <li><a href="contact.html">Contact</a></li>
+    <li><a href="#" id="navUserName" class="nav-cta">My Account</a></li>
+  </ul>
+  <div class="hamburger" onclick="document.getElementById('navLinks').classList.toggle('open')">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- PROFILE HEADER -->
+<div class="profile-header">
+  <div class="profile-header-inner">
+    <div class="avatar-circle" id="avatarCircle">?</div>
+    <div>
+      <h2 id="profileName">Loading...</h2>
+      <p id="profileEmail"></p>
+    </div>
+  </div>
+</div>
+
+<!-- PROFILE BODY -->
+<div class="profile-body">
+
+  <!-- LEFT: User info -->
+  <div>
+    <div class="profile-card">
+      <div class="pc-header">👤 My Details</div>
+      <div class="pc-body">
+        <div class="profile-info-item">
+          <span class="pii-label">Full Name</span>
+          <span class="pii-value" id="infoName">—</span>
+        </div>
+        <div class="profile-info-item">
+          <span class="pii-label">Email</span>
+          <span class="pii-value" id="infoEmail">—</span>
+        </div>
+        <div class="profile-info-item">
+          <span class="pii-label">Phone</span>
+          <span class="pii-value" id="infoPhone">—</span>
+        </div>
+        <div class="profile-info-item">
+          <span class="pii-label">Member Since</span>
+          <span class="pii-value" id="infoJoined">—</span>
+        </div>
+        <button class="logout-btn" onclick="logout()">🚪 Sign Out</button>
+      </div>
+    </div>
+
+    <br/>
+
+    <a href="order.html" class="btn btn-primary" style="display:block;text-align:center;padding:13px;">
+      🛒 Place a New Order
+    </a>
+  </div>
+
+  <!-- RIGHT: Orders -->
+  <div class="orders-section">
+    <h3>📦 My Orders</h3>
+    <div id="ordersList">
+      <div class="empty-orders"><div class="big">📦</div>Loading your orders...</div>
+    </div>
+  </div>
+
+</div>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, onAuthStateChanged, signOut }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, doc, getDoc, collection, getDocs, query, where, orderBy }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // 🔧 REPLACE WITH YOUR FIREBASE CONFIG
+  const firebaseConfig = {
+     apiKey: "AIzaSyDftNbRLydAWxC6p0xLmu2lhT3izgGvvns",
+  authDomain: "parah-integrated-farm-s.firebaseapp.com",
+  projectId: "parah-integrated-farm-s",
+  storageBucket: "parah-integrated-farm-s.firebasestorage.app",
+  messagingSenderId: "529379479635",
+  appId: "1:529379479635:web:5234731e663c529e3676a6"
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  onAuthStateChanged(auth, async user => {
+    if (!user) { window.location.href = 'login.html'; return; }
+
+    // Fill header
+    const name = user.displayName || user.email.split('@')[0];
+    document.getElementById('profileName').textContent  = name;
+    document.getElementById('profileEmail').textContent = user.email;
+    document.getElementById('avatarCircle').textContent = name.charAt(0).toUpperCase();
+    document.getElementById('navUserName').textContent  = name.split(' ')[0];
+    document.getElementById('infoName').textContent     = name;
+    document.getElementById('infoEmail').textContent    = user.email;
+
+    // Get extra data from Firestore
+    try {
+      const snap = await getDoc(doc(db, 'users', user.uid));
+      if (snap.exists()) {
+        const d = snap.data();
+        document.getElementById('infoPhone').textContent  = d.phone  || '—';
+        document.getElementById('infoJoined').textContent = d.createdAt
+          ? new Date(d.createdAt.seconds*1000).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'})
+          : '—';
+      }
+    } catch(e) {}
+
+    // Load orders by phone or email
+    try {
+      const q = query(
+        collection(db, 'orders'),
+        where('email', '==', user.email),
+        orderBy('createdAt', 'desc')
+      );
+      const snap = await getDocs(q);
+      const orders = [];
+      snap.forEach(d => orders.push(d.data()));
+
+      const list = document.getElementById('ordersList');
+      if (orders.length === 0) {
+        list.innerHTML = `<div class="empty-orders">
+          <div class="big">🛒</div>
+          <strong>No orders yet!</strong><br/>
+          Place your first order and it will appear here.
+          <br/><br/>
+          <a href="order.html" class="btn btn-primary" style="padding:11px 24px;">Order Now →</a>
+        </div>`;
+      } else {
+        list.innerHTML = orders.map(r => `
+          <div class="order-row">
+            <div>
+              <div class="or-product">${r.product}</div>
+              <div class="or-date">${r.createdAt ? new Date(r.createdAt.seconds*1000).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}) : '—'}
+              · Qty: ${r.quantity} · ${r.delivery === 'delivery' ? '🚚 Delivery' : '🏠 Pickup'}</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:14px;">
+              <span class="or-total">₦${(r.total||0).toLocaleString()}</span>
+              <span class="status-badge sb-${r.status}">${r.status}</span>
+            </div>
+          </div>`).join('');
+      }
+    } catch(e) {
+      document.getElementById('ordersList').innerHTML =
+        '<div class="empty-orders">Could not load orders. Make sure you enter your email when ordering.</div>';
+    }
+  });
+
+  window.logout = async function() {
+    await signOut(auth);
+    window.location.href = 'index.html';
+  };
+</script>
+</body>
+</html>

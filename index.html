@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PARAH INTEGRATED FARM'S — Fresh From Our Farm</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    /* ── HERO ── */
+    .hero {
+      min-height: 90vh;
+      background: linear-gradient(135deg, var(--green-dark) 0%, var(--green-mid) 60%, #3a7d5c 100%);
+      display: flex;
+      align-items: center;
+      padding: 80px 5%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 60 60"><circle cx="30" cy="30" r="1.5" fill="%2352b788" opacity="0.18"/></svg>') repeat;
+      pointer-events: none;
+    }
+
+    .hero-content {
+      max-width: 1140px;
+      margin: 0 auto;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 60px;
+      align-items: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-text .eyebrow { color: var(--gold); }
+
+    .hero-text h1 {
+      font-size: clamp(2.2rem, 5vw, 3.6rem);
+      color: var(--white);
+      margin-bottom: 22px;
+      line-height: 1.15;
+    }
+
+    .hero-text h1 em {
+      color: var(--green-light);
+      font-style: normal;
+    }
+
+    .hero-text p {
+      color: rgba(255,255,255,0.78);
+      font-size: 1.05rem;
+      margin-bottom: 36px;
+      line-height: 1.75;
+    }
+
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+
+    /* Hero illustration panel */
+    .hero-visual {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 20px;
+      padding: 40px 32px;
+      backdrop-filter: blur(8px);
+    }
+
+    .farm-icon-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .farm-icon-card {
+      background: rgba(255,255,255,0.09);
+      border-radius: 12px;
+      padding: 22px 16px;
+      text-align: center;
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+
+    .farm-icon-card .icon { font-size: 2.4rem; margin-bottom: 8px; }
+    .farm-icon-card .label {
+      color: var(--white);
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+    .farm-icon-card .count {
+      color: var(--green-light);
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
+      margin-top: 4px;
+    }
+
+    /* ── TRUST BAR ── */
+    .trust-bar {
+      background: var(--white);
+      padding: 24px 5%;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+    }
+
+    .trust-inner {
+      max-width: 1140px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .trust-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--text-mid);
+      font-size: 0.88rem;
+      font-weight: 500;
+    }
+
+    .trust-item .icon { font-size: 1.3rem; }
+
+    /* ── PRODUCTS PREVIEW ── */
+    .products-section { background: var(--off-white); }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 24px;
+    }
+
+    .product-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: transform 0.25s, box-shadow 0.25s;
+    }
+
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 36px rgba(26,58,42,0.14);
+    }
+
+    .product-thumb {
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 4rem;
+    }
+
+    .product-thumb.eggs   { background: linear-gradient(135deg, #fff8e1, #ffe082); }
+    .product-thumb.chicken { background: linear-gradient(135deg, #fff3e0, #ffcc80); }
+    .product-thumb.rabbit { background: linear-gradient(135deg, #e8f5e9, #a5d6a7); }
+    .product-thumb.manure { background: linear-gradient(135deg, #efebe9, #bcaaa4); }
+
+    .product-info { padding: 20px; }
+    .product-info h3 { font-size: 1.1rem; margin-bottom: 6px; }
+    .product-info p { font-size: 0.85rem; color: var(--text-mid); margin-bottom: 16px; }
+
+    .product-price {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      color: var(--green-mid);
+      font-weight: 700;
+    }
+    .product-price span { font-family: 'Inter', sans-serif; font-size: 0.78rem; color: var(--text-light); font-weight: 400; }
+
+    /* ── WHY US ── */
+    .why-section { background: var(--green-dark); }
+    .why-section .section-title { color: var(--white); }
+    .why-section .section-sub { color: rgba(255,255,255,0.65); }
+
+    .why-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 28px;
+    }
+
+    .why-card {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: var(--radius);
+      padding: 32px 24px;
+      text-align: center;
+    }
+
+    .why-card .icon { font-size: 2.2rem; margin-bottom: 14px; }
+    .why-card h4 { color: var(--white); font-size: 1rem; margin-bottom: 8px; }
+    .why-card p { color: rgba(255,255,255,0.60); font-size: 0.85rem; line-height: 1.6; }
+
+    /* ── TESTIMONIALS ── */
+    .testimonials { background: var(--green-pale); }
+    .testimonials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .testimonial-card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 28px;
+      box-shadow: var(--shadow);
+      position: relative;
+    }
+
+    .testimonial-card::before {
+      content: '"';
+      position: absolute;
+      top: 12px; left: 20px;
+      font-family: 'Playfair Display', serif;
+      font-size: 4rem;
+      color: var(--green-pale);
+      line-height: 1;
+    }
+
+    .testimonial-text {
+      font-size: 0.92rem;
+      line-height: 1.7;
+      color: var(--text-mid);
+      margin-bottom: 18px;
+      padding-top: 16px;
+    }
+
+    .testimonial-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .avatar {
+      width: 40px; height: 40px;
+      background: var(--green-mid);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--white);
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .author-info .name { font-weight: 600; font-size: 0.88rem; color: var(--text-dark); }
+    .author-info .role { font-size: 0.78rem; color: var(--text-light); }
+
+    /* ── CTA BAND ── */
+    .cta-band {
+      background: linear-gradient(90deg, var(--gold) 0%, #e8b84b 100%);
+      padding: 56px 5%;
+      text-align: center;
+    }
+
+    .cta-band h2 { color: var(--green-dark); font-size: clamp(1.6rem, 3vw, 2.2rem); margin-bottom: 10px; }
+    .cta-band p { color: rgba(26,58,42,0.75); margin-bottom: 28px; font-size: 1rem; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .hero-content { grid-template-columns: 1fr; }
+      .hero-visual { display: none; }
+      .hero { min-height: auto; padding: 64px 5%; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav>
+  <a class="nav-logo" href="index.html">
+    <span class="leaf">🌿</span>
+    <div>
+      <span>PARAH INTEGRATED FARM'S</span>
+      <small>Quality From Our Yard To Your Table</small>
+    </div>
+  </a>
+
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html" class="active">Home</a></li>
+    <li><a href="order.html">Order</a></li>
+    <li><a href="jobs.html">Jobs</a></li>
+    <li><a href="contact.html">Contact</a></li>
+    <li><a href="Login.html">Login</a></li>
+    <li><a href="order.html" class="nav-cta">Order Now</a></li>
+  </ul>
+
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-text">
+      <span class="eyebrow">🐔 Nigeria's Trusted Poultry Farm</span>
+      <h1>Fresh Poultry Products,<br/><em>Delivered to You</em></h1>
+      <p>
+        PARAH INTEGRATED FARM'S raises healthy, premium chickens and fresh eggs
+        the right way — no shortcuts. Order directly from the farm and taste the difference.
+      </p>
+      <div class="hero-actions">
+        <a href="order.html" class="btn btn-gold btn-lg">Place an Order</a>
+        <a href="contact.html" class="btn btn-outline btn-lg">Contact the Farm</a>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="farm-icon-grid">
+        <div class="farm-icon-card">
+          <div class="icon">🥚</div>
+          <div class="label">Fresh Eggs</div>
+          <div class="count">Daily</div>
+        </div>
+        <div class="farm-icon-card">
+          <div class="icon">🐔</div>
+          <div class="label">Live Chickens</div>
+          <div class="count">Available</div>
+        </div>
+        <div class="farm-icon-card">
+          <div class="icon">🌱</div>
+          <div class="label">Farm Fresh</div>
+          <div class="count">Always</div>
+        </div>
+        <div class="farm-icon-card">
+          <div class="icon">🚚</div>
+          <div class="label">Delivery</div>
+          <div class="count">Fast</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TRUST BAR -->
+<div class="trust-bar">
+  <div class="trust-inner">
+    <div class="trust-item"><span class="icon">✅</span> Naturally Raised</div>
+    <div class="trust-item"><span class="icon">🌿</span> No Harmful Additives</div>
+    <div class="trust-item"><span class="icon">📦</span> Same-Day Order Processing</div>
+    <div class="trust-item"><span class="icon">🤝</span> Trusted by Hundreds of Families</div>
+    <div class="trust-item"><span class="icon">💬</span> 24/7 WhatsApp Support</div>
+  </div>
+</div>
+
+<!-- PRODUCTS -->
+<section class="section products-section">
+  <div class="container">
+    <span class="eyebrow">What We Sell</span>
+    <h2 class="section-title">Fresh Products From Our Farm</h2>
+    <p class="section-sub">Everything you see here is raised and harvested right on our farm — no middlemen.</p>
+
+    <div class="products-grid">
+      <div class="product-card">
+        <div class="product-thumb eggs">🥚</div>
+        <div class="product-info">
+          <h3>Fresh Table Eggs</h3>
+          <p>Collected daily. Rich yolk, clean shell, straight from our layers.</p>
+          <div class="product-price">₦6,500  ₦6,000  ₦5,500 <span>different size / crate (30 eggs)</span></div>
+          <br/>
+          <a href="order.html" class="btn btn-primary">Order Now</a>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-thumb chicken">🐔</div>
+        <div class="product-info">
+          <h3>Live Broiler Chickens</h3>
+          <p>Healthy, well-fed broilers ready for purchase at various weights.</p>
+          <div class="product-price">₦9,500 <span>/ bird (avg. 3kg)</span></div>
+          <br/>
+          <a href="order.html" class="btn btn-primary">Order Now</a>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-thumb Rabbit">🐇</div>
+        <div class="product-info">
+          <h3>Rabbit</h3>
+          <p>Healthy Rabbit for fellow farmers. Vaccinated and certified.</p>
+          <div class="product-price">₦8000 <span>/ Rabbit</span></div>
+          <br/>
+          <a href="order.html" class="btn btn-primary">Order Now</a>
+        </div>
+      </div>
+
+      <div class="product-card">
+        <div class="product-thumb manure">🌾</div>
+        <div class="product-info">
+          <h3>Organic Poultry Manure</h3>
+          <p>Rich organic fertilizer for crop farmers. Bagged and ready to use.</p>
+          <div class="product-price">₦3,000 <span>/ bag (50kg)</span></div>
+          <br/>
+          <a href="order.html" class="btn btn-primary">Order Now</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHY US -->
+<section class="section why-section">
+  <div class="container">
+    <span class="eyebrow">Why Choose Us</span>
+    <h2 class="section-title">The PARAH Difference</h2>
+    <p class="section-sub">We're not just another farm. We care about what goes into every bird.</p>
+    <div class="why-grid">
+      <div class="why-card">
+        <div class="icon">🌿</div>
+        <h4>Natural Feed Only</h4>
+        <p>Our birds eat balanced, natural diets — no growth hormones or harmful chemicals.</p>
+      </div>
+      <div class="why-card">
+        <div class="icon">🏡</div>
+        <h4>Spacious Housing</h4>
+        <p>Clean, well-ventilated housing that keeps our birds healthy and stress-free.</p>
+      </div>
+      <div class="why-card">
+        <div class="icon">💉</div>
+        <h4>Regular Vaccination</h4>
+        <p>All our birds are properly vaccinated and monitored by trained farm staff.</p>
+      </div>
+      <div class="why-card">
+        <div class="icon">🤝</div>
+        <h4>Direct From Farm</h4>
+        <p>Order directly from us and get the freshest products at the best prices.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="section testimonials">
+  <div class="container">
+    <span class="eyebrow">What Customers Say</span>
+    <h2 class="section-title">Trusted by Families & Businesses</h2>
+    <p class="section-sub">Real words from the people we serve.</p>
+    <div class="testimonials-grid">
+      <div class="testimonial-card">
+        <p class="testimonial-text">PARAH FARM's eggs are genuinely the freshest I've ever bought. I order two crates every week. The yolks are so rich!</p>
+        <div class="testimonial-author">
+          <div class="avatar">AO</div>
+          <div class="author-info">
+            <div class="name">Adefunke Okafor</div>
+            <div class="role">Regular Customer, Ibadan</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <p class="testimonial-text">I buy their broilers for my restaurant every month. Always healthy birds, always the right weight. No stories.</p>
+        <div class="testimonial-author">
+          <div class="avatar">MK</div>
+          <div class="author-info">
+            <div class="name">Musa Kambili</div>
+            <div class="role">Restaurant Owner</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <p class="testimonial-text">Their fingerlings are top quality. I've been buying for my own farm and the mortality rate is very low. Highly recommended!</p>
+        <div class="testimonial-author">
+          <div class="avatar">TJ</div>
+          <div class="author-info">
+            <div class="name">Taiwo James</div>
+            <div class="role">Fellow Farmer</div>
+          </div>
+        </div>
+      </div>
+          <div class="testimonial-card">
+        <p class="testimonial-text">Omo Parah smoked fish & chicken is sweet oooo. I dey order every two-two days for my famliy</p>
+        <div class="testimonial-author">
+          <div class="avatar">PA</div>
+          <div class="author-info">
+            <div class="name">Praise Ayoola</div>
+            <div class="role">Regular Customer, Osogbo</div>
+          </div>
+        </div>
+      </div>
+       <div class="testimonial-card">
+        <p class="testimonial-text">Thank God say I change were i buy fish to Parah Farm's, since when i know about Parah Integrated Farm's i never regret and my business they Grow always. You too try them.  </p>
+        <div class="testimonial-author">
+          <div class="avatar">OR</div>
+          <div class="author-info">
+            <div class="name">Omo-ola Restaurant</div>
+            <div class="role">Restaurant Owner</div>
+          </div>
+        </div>
+      </div>
+       <div class="testimonial-card">
+        <p class="testimonial-text">I am the happiest man on earth, because if i have not hear about Parah maybe my farm will be dead by now.  </p>
+        <div class="testimonial-author">
+          <div class="avatar">T&T</div>
+          <div class="author-info">
+            <div class="name">Tola & Tayo Farm's</div>
+            <div class="role">Fellow Farmer</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<section class="cta-band">
+  <h2>Ready to Place Your Order?</h2>
+  <p>Fresh eggs and chickens available for pickup or delivery. Contact us today.</p>
+  <a href="order.html" class="btn btn-primary btn-lg">Start Your Order →</a>
+</section>
+
+<!-- RATINGS & COMMENTS -->
+<section class="section" style="background:var(--white);">
+  <div class="container">
+    <span class="eyebrow">⭐ Your Feedback</span>
+    <h2 class="section-title">Rate & Review Our Website</h2>
+    <p class="section-sub">Tell us what you think — your feedback helps us serve you better.</p>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:36px;align-items:start;">
+
+      <!-- LEAVE A REVIEW FORM -->
+      <div style="background:var(--off-white);border-radius:var(--radius);padding:32px;">
+        <h3 style="font-size:1.1rem;margin-bottom:20px;color:var(--green-dark);">Leave a Review</h3>
+
+        <div class="form-group">
+          <label>Your Name *</label>
+          <input type="text" id="rvName" placeholder="Enter your name"/>
+        </div>
+
+        <div class="form-group">
+          <label>Your Rating *</label>
+          <div id="starPicker" style="display:flex;gap:8px;font-size:2rem;cursor:pointer;margin-top:6px;">
+            <span class="star" data-v="1" onclick="pickStar(1)">☆</span>
+            <span class="star" data-v="2" onclick="pickStar(2)">☆</span>
+            <span class="star" data-v="3" onclick="pickStar(3)">☆</span>
+            <span class="star" data-v="4" onclick="pickStar(4)">☆</span>
+            <span class="star" data-v="5" onclick="pickStar(5)">☆</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Your Comment *</label>
+          <textarea id="rvComment" rows="4" placeholder="Share your experience with PARAH FARM..."></textarea>
+        </div>
+
+        <button class="btn btn-primary" style="width:100%;padding:13px;" onclick="submitReview()">
+          Submit Review →
+        </button>
+        <div id="rvSuccess" style="display:none;margin-top:14px;padding:12px;background:var(--green-pale);border-radius:8px;font-size:0.85rem;color:var(--green-mid);text-align:center;">
+          ✅ Thank you! Your review has been submitted.
+        </div>
+      </div>
+
+      <!-- LIVE REVIEWS DISPLAY -->
+      <div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;">
+          <h3 style="font-size:1.1rem;color:var(--green-dark);">What People Are Saying</h3>
+          <div style="background:var(--green-pale);padding:8px 16px;border-radius:20px;text-align:center;">
+            <div style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;color:var(--green-mid);" id="avgRating">—</div>
+            <div style="font-size:0.72rem;color:var(--text-light);" id="totalReviews">0 reviews</div>
+          </div>
+        </div>
+        <div id="reviewsList" style="display:flex;flex-direction:column;gap:14px;max-height:400px;overflow-y:auto;">
+          <div style="text-align:center;padding:24px;color:var(--text-light);font-size:0.85rem;">Loading reviews...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<style>
+  .star { transition: color 0.15s; user-select:none; }
+  .star.filled { color: #f59e0b; }
+  .review-card {
+    background: var(--off-white); border-radius: 10px; padding: 16px;
+    border-left: 3px solid var(--green-light);
+  }
+  .review-card .rv-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+  .review-card .rv-name { font-weight:600; font-size:0.88rem; color:var(--green-dark); }
+  .review-card .rv-stars { color:#f59e0b; font-size:0.9rem; }
+  .review-card .rv-text { font-size:0.84rem; color:var(--text-mid); line-height:1.6; }
+  .review-card .rv-date { font-size:0.72rem; color:var(--text-light); margin-top:6px; }
+
+  @media(max-width:768px){
+    #ratingGrid { grid-template-columns:1fr !important; }
+  }
+</style>
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a class="nav-logo" href="index.html">
+        <span class="leaf">🌿</span>
+        <div>
+          <span style="color:#fff;font-family:'Playfair Display',serif;font-size:1rem;">PARAH INTEGRATED FARM'S</span>
+        </div>
+      </a>
+      <p>Raising healthy poultry the right way — naturally fed, properly vaccinated, and fresh from our yard to your table.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="order.html">Order Products</a></li>
+        <li><a href="jobs.html">Job Applications</a></li>
+        <li><a href="contact.html">Contact Us</a></li>
+        <li><a href="admin.html">Admin portal</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Products</h4>
+      <ul>
+        <li><a href="order.html">Fresh Eggs</a></li>
+        <li><a href="order.html">Live Chickens</a></li>
+        <li><a href="order.html">Rabbit</a></li>
+        <li><a href="order.html">Poultry Manure</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="tel:+2348067033288">📞 08067033288</a></li>
+        <li><a href="tel:+2348062301723">📞 08062301723</a></li>
+        <li><a href="tel:+2347049069026">📞 07049069026</li>
+        <li><a href="mailto:info@parahventures@gmail.com">✉️ info@parahventures@gmail.com</a></li>
+        <li><a href="https://wa.me/2349065942822" target="_blank">💬 WhatsApp Us</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2026 PARAH INTEGRATED FARM'S. All rights reserved.</span>
+    <span>Built with ❤️ for farmers & families.</span>
+  </div>
+</footer>
+
+<script>
+  function toggleMenu() {
+    document.getElementById('navLinks').classList.toggle('open');
+  }
+</script>
+
+</body>
+</html>

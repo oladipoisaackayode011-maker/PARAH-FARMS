@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel — PARAH INTEGRATED FARM'S</title>
+  <link rel="stylesheet" href="style.css"/>
+  <style>
+    body { background: #f0f4f1; }
+
+    /* ── LOGIN ── */
+    .login-screen {
+      min-height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, var(--green-dark), var(--green-mid));
+    }
+    .login-card {
+      background: var(--white); border-radius: 16px;
+      padding: 48px 40px; width: 100%; max-width: 400px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25); text-align: center;
+    }
+    .login-card .logo { font-size: 2.6rem; margin-bottom: 8px; }
+    .login-card h2 { font-size: 1.4rem; color: var(--green-dark); margin-bottom: 4px; }
+    .login-card p  { font-size: 0.82rem; color: var(--text-light); margin-bottom: 28px; }
+    .login-card .form-group { text-align: left; }
+    .login-btn { width:100%; padding:13px; margin-top:8px; font-size:0.96rem; }
+    .login-error { color:#c62828; font-size:0.82rem; margin-top:12px; display:none; padding:10px; background:#fce4ec; border-radius:6px; }
+
+    /* ── SHELL ── */
+    .admin-wrapper { display:none; }
+
+    .admin-nav {
+      background: var(--green-dark); padding: 0 28px; height: 62px;
+      display: flex; align-items: center; justify-content: space-between;
+      position: sticky; top:0; z-index:200;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.2);
+    }
+    .admin-nav .brand {
+      color:var(--white); font-family:'Playfair Display',serif;
+      font-size:1rem; display:flex; align-items:center; gap:9px;
+    }
+    .admin-nav .right { display:flex; align-items:center; gap:12px; }
+    .admin-nav .admin-user { font-size:0.80rem; color:rgba(255,255,255,0.60); }
+
+    .admin-layout {
+      display:grid; grid-template-columns:230px 1fr;
+      min-height:calc(100vh - 62px);
+    }
+
+    /* ── SIDEBAR ── */
+    .admin-sidebar {
+      background:var(--white); padding:20px 0;
+      border-right:1px solid var(--border);
+      position:sticky; top:62px; height:calc(100vh - 62px); overflow-y:auto;
+    }
+    .sb-label {
+      font-size:0.68rem; font-weight:700; letter-spacing:0.14em;
+      text-transform:uppercase; color:var(--text-light); padding:14px 24px 6px;
+    }
+    .sb-menu { list-style:none; }
+    .sb-menu li a {
+      display:flex; align-items:center; gap:10px;
+      padding:11px 24px; font-size:0.87rem; font-weight:500;
+      color:var(--text-mid); transition:all 0.18s; cursor:pointer; text-decoration:none;
+    }
+    .sb-menu li a:hover { background:var(--green-pale); color:var(--green-dark); }
+    .sb-menu li a.active {
+      background:var(--green-pale); color:var(--green-mid);
+      font-weight:600; border-right:3px solid var(--green-mid);
+    }
+    .badge {
+      margin-left:auto; color:var(--white);
+      font-size:0.68rem; font-weight:700; padding:2px 7px; border-radius:10px;
+    }
+    .badge.g { background:var(--green-mid); }
+    .badge.r { background:#e53935; }
+
+    /* ── MAIN ── */
+    .admin-main { padding:28px 32px; }
+    .pg-title { font-size:1.4rem; color:var(--green-dark); margin-bottom:4px; }
+    .pg-sub   { font-size:0.84rem; color:var(--text-light); margin-bottom:26px; }
+
+    .tab-content { display:none; }
+    .tab-content.active { display:block; }
+
+    /* ── STAT CARDS ── */
+    .stats-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; margin-bottom:28px; }
+    .stat-card {
+      background:var(--white); border-radius:var(--radius);
+      padding:20px; box-shadow:var(--shadow); display:flex; align-items:center; gap:14px;
+    }
+    .stat-icon {
+      width:46px; height:46px; border-radius:10px;
+      display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0;
+    }
+    .si-gr { background:var(--green-pale); }
+    .si-go { background:#fff8e1; }
+    .si-bl { background:#e3f2fd; }
+    .si-re { background:#fce4ec; }
+    .stat-label { font-size:0.72rem; color:var(--text-light); font-weight:500; }
+    .stat-value { font-family:'Playfair Display',serif; font-size:1.55rem; font-weight:700; color:var(--green-dark); line-height:1; margin:2px 0; }
+    .stat-sub   { font-size:0.70rem; color:var(--text-light); }
+
+    /* ── REVENUE ── */
+    .rev-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-bottom:28px; }
+    .rev-card {
+      background:var(--white); border-radius:var(--radius);
+      padding:24px 20px; box-shadow:var(--shadow); text-align:center;
+    }
+    .rev-card .period { font-size:0.72rem; font-weight:700; letter-spacing:0.10em; text-transform:uppercase; color:var(--text-light); margin-bottom:8px; }
+    .rev-card .amount { font-family:'Playfair Display',serif; font-size:2rem; font-weight:700; color:var(--green-mid); }
+    .rev-card .orders { font-size:0.78rem; color:var(--text-light); margin-top:4px; }
+
+    /* ── TABLE ── */
+    .table-card { background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden; margin-bottom:24px; }
+    .table-header {
+      padding:18px 24px; display:flex; justify-content:space-between;
+      align-items:center; border-bottom:1px solid var(--border); flex-wrap:wrap; gap:10px;
+    }
+    .table-header h3 { font-size:1rem; color:var(--green-dark); }
+    .search-input {
+      padding:8px 13px; border:1.5px solid var(--border); border-radius:var(--radius-sm);
+      font-size:0.82rem; outline:none; width:200px; font-family:'Inter',sans-serif;
+    }
+    .search-input:focus { border-color:var(--green-mid); }
+    table { width:100%; border-collapse:collapse; }
+    thead tr { background:var(--off-white); }
+    th { text-align:left; padding:10px 14px; font-size:0.70rem; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-light); }
+    td { padding:12px 14px; font-size:0.84rem; color:var(--text-dark); border-bottom:1px solid var(--border); vertical-align:middle; }
+    tr:last-child td { border-bottom:none; }
+    tr:hover td { background:#f9fbfa; }
+
+    .status-badge {
+      display:inline-flex; align-items:center;
+      padding:3px 9px; border-radius:20px; font-size:0.70rem; font-weight:600;
+    }
+    .sb-pending     { background:#fff8e1; color:#f57f17; }
+    .sb-confirmed   { background:#e8f5e9; color:#2e7d32; }
+    .sb-completed   { background:#e3f2fd; color:#1565c0; }
+    .sb-cancelled   { background:#fce4ec; color:#c62828; }
+    .sb-shortlisted { background:#ede7f6; color:#4527a0; }
+    .sb-read        { background:#e8f5e9; color:#2e7d32; }
+    .sb-unread      { background:#fff8e1; color:#f57f17; }
+
+    .ab {
+      padding:4px 10px; border:none; border-radius:5px;
+      font-size:0.74rem; font-weight:600; cursor:pointer; transition:opacity 0.2s; margin-right:3px;
+    }
+    .ab:hover { opacity:0.78; }
+    .ab-gr  { background:var(--green-pale); color:var(--green-mid); }
+    .ab-bl  { background:#e3f2fd; color:#1565c0; }
+    .ab-re  { background:#fce4ec; color:#c62828; }
+    .ab-go  { background:#fff8e1; color:#f57f17; }
+
+    .empty-row td { text-align:center; color:var(--text-light); padding:36px; }
+
+    /* ── PRODUCTS MANAGER ── */
+    .pm-grid { display:grid; grid-template-columns:1fr 360px; gap:24px; align-items:start; }
+    .pf-card { background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); padding:28px; }
+    .pf-card h3 { font-size:1.05rem; margin-bottom:20px; color:var(--green-dark); }
+
+    .emoji-picker { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+    .ep {
+      width:42px; height:42px; border:2px solid var(--border); border-radius:8px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.3rem; cursor:pointer; transition:all 0.15s;
+    }
+    .ep:hover, .ep.sel { border-color:var(--green-mid); background:var(--green-pale); }
+
+    .color-picker { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
+    .cp {
+      width:32px; height:32px; border-radius:50%; cursor:pointer;
+      border:3px solid transparent; transition:all 0.15s;
+    }
+    .cp.sel { border-color:var(--green-dark); transform:scale(1.18); }
+
+    /* ── SETTINGS ── */
+    .settings-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+    .sc { background:var(--white); border-radius:var(--radius); box-shadow:var(--shadow); padding:28px; }
+    .sc h3 { font-size:1.05rem; margin-bottom:6px; color:var(--green-dark); }
+    .sc > p { font-size:0.82rem; color:var(--text-light); margin-bottom:18px; }
+
+    .admin-list { list-style:none; margin-bottom:18px; }
+    .admin-list li {
+      display:flex; justify-content:space-between; align-items:center;
+      padding:10px 14px; background:var(--off-white); border-radius:8px; margin-bottom:8px;
+    }
+    .admin-list .em { font-size:0.85rem; font-weight:500; color:var(--green-dark); }
+    .role-tag {
+      font-size:0.70rem; font-weight:700; padding:2px 8px;
+      border-radius:10px; background:var(--green-pale); color:var(--green-mid);
+    }
+    .role-tag.owner { background:#fff8e1; color:#f57f17; }
+    .limit-bar {
+      font-size:0.78rem; color:var(--text-mid); margin-bottom:14px;
+      padding:10px 14px; background:var(--green-pale); border-radius:8px;
+    }
+    .limit-bar span { font-weight:700; color:var(--green-mid); }
+    .tip-box {
+      background:var(--green-pale); border-radius:8px; padding:14px;
+      font-size:0.82rem; color:var(--text-mid); line-height:1.6; margin-top:16px;
+    }
+
+    @media(max-width:900px){
+      .admin-layout { grid-template-columns:1fr; }
+      .admin-sidebar { display:none; }
+      .stats-grid { grid-template-columns:1fr 1fr; }
+      .rev-grid { grid-template-columns:1fr; }
+      .pm-grid { grid-template-columns:1fr; }
+      .settings-grid { grid-template-columns:1fr; }
+    }
+    @media(max-width:540px){
+      .stats-grid { grid-template-columns:1fr; }
+      .admin-main { padding:16px; }
+      .login-card { padding:32px 22px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ LOGIN ══ -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <div class="logo">🌿</div>
+    <h2>PARAH FARM Admin</h2>
+    <p>Restricted access — authorised staff only</p>
+    <div class="form-group">
+      <label>Email Address</label>
+      <input type="email" id="loginEmail" placeholder="admin@parahfarm.com"/>
+    </div>
+    <div class="form-group">
+      <label>Password</label>
+      <input type="password" id="loginPassword" placeholder="Enter password"
+             onkeydown="if(event.key==='Enter') adminLogin()"/>
+    </div>
+    <button class="btn btn-primary login-btn" onclick="adminLogin()">Sign In →</button>
+    <div class="login-error" id="loginError"></div>
+  </div>
+</div>
+
+<!-- ══ ADMIN WRAPPER ══ -->
+<div class="admin-wrapper" id="adminWrapper">
+
+  <!-- TOP NAV -->
+  <nav class="admin-nav">
+    <div class="brand">🌿 PARAH FARM — Admin Panel</div>
+    <div class="right">
+      <span class="admin-user" id="adminUserLabel"></span>
+      <a href="index.html" target="_blank" class="btn btn-outline"
+         style="padding:6px 13px;font-size:0.78rem;">View Site ↗</a>
+      <button class="btn btn-outline" style="padding:6px 13px;font-size:0.78rem;"
+              onclick="adminLogout()">Logout</button>
+    </div>
+  </nav>
+
+  <div class="admin-layout">
+
+    <!-- SIDEBAR -->
+    <div class="admin-sidebar">
+      <div class="sb-label">Overview</div>
+      <ul class="sb-menu">
+        <li><a id="nav-dashboard"    onclick="showTab('dashboard')"    class="active">📊 Dashboard</a></li>
+        <li><a id="nav-revenue"      onclick="showTab('revenue')">💰 Revenue</a></li>
+      </ul>
+      <div class="sb-label">Manage</div>
+      <ul class="sb-menu">
+        <li><a id="nav-orders"       onclick="showTab('orders')">📦 Orders <span class="badge r" id="ordBadge">0</span></a></li>
+        <li><a id="nav-products"     onclick="showTab('products')">🛒 Products</a></li>
+        <li><a id="nav-applications" onclick="showTab('applications')">💼 Applications <span class="badge g" id="appBadge">0</span></a></li>
+        <li><a id="nav-messages"     onclick="showTab('messages')">💬 Messages <span class="badge r" id="msgBadge">0</span></a></li>
+      </ul>
+      <div class="sb-label">Feedback</div>
+      <ul class="sb-menu">
+        <li><a id="nav-reviews" onclick="showTab('reviews')">⭐ Reviews <span class="badge g" id="rvBadge">0</span></a></li>
+      </ul>
+      <div class="sb-label">System</div>
+      <ul class="sb-menu">
+        <li><a id="nav-settings" onclick="showTab('settings')">⚙️ Settings & Admins</a></li>
+      </ul>
+    </div>
+
+    <!-- MAIN AREA -->
+    <div class="admin-main">
+
+      <!-- ── DASHBOARD ── -->
+      <div class="tab-content active" id="tab-dashboard">
+        <div class="pg-title">Dashboard</div>
+        <div class="pg-sub">Welcome back. Here's what's happening on your farm.</div>
+
+        <div class="stats-grid" style="grid-template-columns:repeat(5,1fr);">
+          <div class="stat-card">
+            <div class="stat-icon si-gr">👥</div>
+            <div><div class="stat-label">Website Visitors</div>
+                 <div class="stat-value" id="dVisitors">—</div>
+                 <div class="stat-sub">Total visits</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon si-gr">📦</div>
+            <div><div class="stat-label">Total Orders</div>
+                 <div class="stat-value" id="dOrders">—</div>
+                 <div class="stat-sub">All time</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon si-go">⏳</div>
+            <div><div class="stat-label">Pending</div>
+                 <div class="stat-value" id="dPending">—</div>
+                 <div class="stat-sub">Needs action</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon si-bl">💼</div>
+            <div><div class="stat-label">Applications</div>
+                 <div class="stat-value" id="dApps">—</div>
+                 <div class="stat-sub">Total received</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon si-re">💬</div>
+            <div><div class="stat-label">Unread Messages</div>
+                 <div class="stat-value" id="dMsgs">—</div>
+                 <div class="stat-sub">Need reply</div></div>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <div class="table-header">
+            <h3>Recent Orders</h3>
+            <button class="btn btn-primary" style="padding:7px 16px;font-size:0.80rem;"
+                    onclick="showTab('orders')">View All →</button>
+          </div>
+          <div id="recentOrders"><div style="text-align:center;padding:36px;color:var(--text-light);">Loading...</div></div>
+        </div>
+      </div>
+
+      <!-- ── REVENUE ── -->
+      <div class="tab-content" id="tab-revenue">
+        <div class="pg-title">Revenue Summary</div>
+        <div class="pg-sub">Track your earnings — today, this week, this month.</div>
+
+        <div class="rev-grid">
+          <div class="rev-card">
+            <div class="period">📅 Today</div>
+            <div class="amount" id="revToday">₦0</div>
+            <div class="orders" id="revTodayC">0 orders</div>
+          </div>
+          <div class="rev-card">
+            <div class="period">📆 This Week</div>
+            <div class="amount" id="revWeek">₦0</div>
+            <div class="orders" id="revWeekC">0 orders</div>
+          </div>
+          <div class="rev-card">
+            <div class="period">🗓️ This Month</div>
+            <div class="amount" id="revMonth">₦0</div>
+            <div class="orders" id="revMonthC">0 orders</div>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <div class="table-header"><h3>Revenue by Product</h3></div>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead><tr><th>Product</th><th>Orders</th><th>Units Sold</th><th>Total Revenue</th></tr></thead>
+              <tbody id="revByProduct"><tr class="empty-row"><td colspan="4">Loading...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <div class="table-header"><h3>Monthly Breakdown</h3></div>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead><tr><th>Month</th><th>Orders</th><th>Revenue</th></tr></thead>
+              <tbody id="revMonthly"><tr class="empty-row"><td colspan="3">Loading...</td></tr></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── ORDERS ── -->
+      <div class="tab-content" id="tab-orders">
+        <div class="pg-title">Orders</div>
+        <div class="pg-sub">Manage all customer orders from here.</div>
+        <div class="table-card">
+          <div class="table-header">
+            <h3>All Orders</h3>
+            <input class="search-input" placeholder="🔍 Search..."
+                   oninput="filterTable('tblOrders', this.value)"/>
+          </div>
+          <div style="overflow-x:auto;">
+            <table id="tblOrders">
+              <thead>
+                <tr>
+                  <th>Date</th><th>Customer</th><th>Phone</th><th>Product</th>
+                  <th>Qty</th><th>Total</th><th>Delivery</th><th>Status</th><th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="ordersBody">
+                <tr class="empty-row"><td colspan="9">Loading orders...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PRODUCTS ── -->
+      <div class="tab-content" id="tab-products">
+        <div class="pg-title">Products Manager</div>
+        <div class="pg-sub">Add, edit or delete products. Changes go live on the website instantly.</div>
+        <div class="pm-grid">
+
+          <!-- Product list -->
+          <div class="table-card">
+            <div class="table-header"><h3>Current Products</h3></div>
+            <div style="overflow-x:auto;">
+              <table id="tblProducts">
+                <thead><tr><th>Icon</th><th>Name</th><th>Price</th><th>Unit</th><th>Description</th><th>Actions</th></tr></thead>
+                <tbody id="productsBody">
+                  <tr class="empty-row"><td colspan="6">Loading products...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Add/Edit form -->
+          <div class="pf-card">
+            <h3 id="pfTitle">➕ Add New Product</h3>
+            <div class="form-group">
+              <label>Product Name *</label>
+              <input type="text" id="pName" placeholder="e.g. Fresh Turkey"/>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Price (₦) *</label>
+                <input type="number" id="pPrice" placeholder="e.g. 8000"/>
+              </div>
+              <div class="form-group">
+                <label>Price Unit *</label>
+                <input type="text" id="pUnit" placeholder="e.g. per bird"/>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Short Description *</label>
+              <input type="text" id="pDesc" placeholder="e.g. Farm-raised, healthy turkey"/>
+            </div>
+            <div class="form-group">
+              <label>Choose Icon</label>
+              <div class="emoji-picker">
+                <div class="ep sel" onclick="pickEmoji(this,'🥚')">🥚</div>
+                <div class="ep" onclick="pickEmoji(this,'🐔')">🐔</div>
+                <div class="ep" onclick="pickEmoji(this,'🐣')">🐣</div>
+                <div class="ep" onclick="pickEmoji(this,'🌾')">🌾</div>
+                <div class="ep" onclick="pickEmoji(this,'🐇')">🐇</div>
+                <div class="ep" onclick="pickEmoji(this,'🦃')">🦃</div>
+                <div class="ep" onclick="pickEmoji(this,'🐟')">🐟</div>
+                <div class="ep" onclick="pickEmoji(this,'🥩')">🥩</div>
+                <div class="ep" onclick="pickEmoji(this,'🌽')">🌽</div>
+                <div class="ep" onclick="pickEmoji(this,'🍳')">🍳</div>
+                <div class="ep" onclick="pickEmoji(this,'🐄')">🐄</div>
+                <div class="ep" onclick="pickEmoji(this,'🐖')">🐖</div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Card Color</label>
+              <div class="color-picker">
+                <div class="cp sel" style="background:linear-gradient(135deg,#fff8e1,#ffe082)" onclick="pickColor(this,'linear-gradient(135deg,#fff8e1,#ffe082)')"></div>
+                <div class="cp" style="background:linear-gradient(135deg,#fff3e0,#ffcc80)" onclick="pickColor(this,'linear-gradient(135deg,#fff3e0,#ffcc80)')"></div>
+                <div class="cp" style="background:linear-gradient(135deg,#e8f5e9,#a5d6a7)" onclick="pickColor(this,'linear-gradient(135deg,#e8f5e9,#a5d6a7)')"></div>
+                <div class="cp" style="background:linear-gradient(135deg,#efebe9,#bcaaa4)" onclick="pickColor(this,'linear-gradient(135deg,#efebe9,#bcaaa4)')"></div>
+                <div class="cp" style="background:linear-gradient(135deg,#f3e5f5,#ce93d8)" onclick="pickColor(this,'linear-gradient(135deg,#f3e5f5,#ce93d8)')"></div>
+                <div class="cp" style="background:linear-gradient(135deg,#e3f2fd,#90caf9)" onclick="pickColor(this,'linear-gradient(135deg,#e3f2fd,#90caf9)')"></div>
+                <div class="cp" style="background:linear-gradient(135deg,#fce4ec,#f48fb1)" onclick="pickColor(this,'linear-gradient(135deg,#fce4ec,#f48fb1)')"></div>
+                <div class="cp" style="background:linear-gradient(135deg,#e0f7fa,#80deea)" onclick="pickColor(this,'linear-gradient(135deg,#e0f7fa,#80deea)')"></div>
+              </div>
+            </div>
+            <input type="hidden" id="pEditId"/>
+            <div style="display:flex;gap:10px;margin-top:20px;">
+              <button class="btn btn-primary" style="flex:1;padding:12px;" onclick="saveProduct()">Save Product</button>
+              <button class="btn" style="padding:12px 14px;background:var(--off-white);color:var(--text-mid);border:1.5px solid var(--border);" onclick="resetPF()">Clear</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── APPLICATIONS ── -->
+      <div class="tab-content" id="tab-applications">
+        <div class="pg-title">Job Applications</div>
+        <div class="pg-sub">Review all applicants and shortlist the best ones.</div>
+        <div class="table-card">
+          <div class="table-header">
+            <h3>All Applications</h3>
+            <input class="search-input" placeholder="🔍 Search..."
+                   oninput="filterTable('tblApps', this.value)"/>
+          </div>
+          <div style="overflow-x:auto;">
+            <table id="tblApps">
+              <thead>
+                <tr><th>Date</th><th>Name</th><th>Phone</th><th>Position</th><th>Experience</th><th>Availability</th><th>Status</th><th>Actions</th></tr>
+              </thead>
+              <tbody id="appsBody">
+                <tr class="empty-row"><td colspan="8">Loading applications...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── MESSAGES ── -->
+      <div class="tab-content" id="tab-messages">
+        <div class="pg-title">Messages</div>
+        <div class="pg-sub">Contact form messages from website visitors.</div>
+        <div class="table-card">
+          <div class="table-header">
+            <h3>All Messages</h3>
+            <input class="search-input" placeholder="🔍 Search..."
+                   oninput="filterTable('tblMsgs', this.value)"/>
+          </div>
+          <div style="overflow-x:auto;">
+            <table id="tblMsgs">
+              <thead>
+                <tr><th>Date</th><th>Name</th><th>Phone</th><th>Subject</th><th>Message</th><th>Status</th><th>Actions</th></tr>
+              </thead>
+              <tbody id="msgsBody">
+                <tr class="empty-row"><td colspan="7">Loading messages...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── REVIEWS ── -->
+      <div class="tab-content" id="tab-reviews">
+        <div class="pg-title">Ratings & Reviews</div>
+        <div class="pg-sub">See what visitors think about your website and farm.</div>
+
+        <div class="stats-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:24px;">
+          <div class="stat-card">
+            <div class="stat-icon si-go">⭐</div>
+            <div><div class="stat-label">Average Rating</div>
+                 <div class="stat-value" id="rvAvg">—</div>
+                 <div class="stat-sub">Out of 5</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon si-gr">💬</div>
+            <div><div class="stat-label">Total Reviews</div>
+                 <div class="stat-value" id="rvTotal">—</div>
+                 <div class="stat-sub">All time</div></div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon si-bl">👥</div>
+            <div><div class="stat-label">Website Visitors</div>
+                 <div class="stat-value" id="rvVisitors">—</div>
+                 <div class="stat-sub">Total visits</div></div>
+          </div>
+        </div>
+
+        <div class="table-card">
+          <div class="table-header">
+            <h3>All Reviews</h3>
+            <input class="search-input" placeholder="🔍 Search..." oninput="filterTable('tblReviews',this.value)"/>
+          </div>
+          <div style="overflow-x:auto;">
+            <table id="tblReviews">
+              <thead><tr><th>Date</th><th>Name</th><th>Rating</th><th>Comment</th><th>Actions</th></tr></thead>
+              <tbody id="reviewsBody">
+                <tr class="empty-row"><td colspan="5">Loading reviews...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── SETTINGS ── -->
+      <div class="tab-content" id="tab-settings">
+        <div class="pg-title">Settings & Admin Access</div>
+        <div class="pg-sub">Control who can log in to this admin panel.</div>
+        <div class="settings-grid">
+
+          <div class="sc">
+            <h3>👥 Admin Accounts</h3>
+            <p>Only emails on this list can access the admin panel.</p>
+            <div class="limit-bar">
+              Using <span id="adminCount">0</span> of <span id="adminLimit">5</span> admin slots.
+            </div>
+            <ul class="admin-list" id="adminList">
+              <li style="color:var(--text-light);font-size:0.82rem;">Loading...</li>
+            </ul>
+            <div id="addAdminForm">
+              <div class="form-group">
+                <label>New Admin Email</label>
+                <input type="email" id="newEmail" placeholder="staff@example.com"/>
+              </div>
+              <div class="form-group">
+                <label>Role / Title</label>
+                <input type="text" id="newRole" placeholder="e.g. Farm Manager"/>
+              </div>
+              <button class="btn btn-primary" style="width:100%;padding:11px;" onclick="addAdmin()">
+                Add Admin
+              </button>
+            </div>
+          </div>
+
+          <div class="sc">
+            <h3>⚙️ Admin Limit</h3>
+            <p>Change the maximum number of admin accounts allowed.</p>
+            <div class="form-group">
+              <label>Max Admins Allowed</label>
+              <input type="number" id="newLimit" placeholder="e.g. 5" min="1" max="50"/>
+            </div>
+            <button class="btn btn-primary" style="width:100%;padding:11px;" onclick="updateLimit()">
+              Update Limit
+            </button>
+            <div class="tip-box">
+              💡 <strong>Note:</strong> Admin accounts still need to be created in
+              <strong>Firebase Authentication</strong> (Email/Password). This list only controls
+              who is <em>allowed</em> to enter. If someone logs in with a valid Firebase account
+              but their email is not listed here, access will be denied.
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div><!-- /admin-main -->
+  </div><!-- /admin-layout -->
+</div><!-- /admin-wrapper -->
+
+<div class="toast" id="toast"></div>
+
+<!-- ══ FIREBASE ══ -->
+<script type="module">
+  import { initializeApp }   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import { getFirestore, collection, getDocs, doc, getDoc, setDoc,
+           addDoc, updateDoc, deleteDoc, query, orderBy, limit, serverTimestamp }
+    from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // 🔧 REPLACE WITH YOUR FIREBASE CONFIG
+  const firebaseConfig = {
+     apiKey: "AIzaSyDftNbRLydAWxC6p0xLmu2lhT3izgGvvns",
+  authDomain: "parah-integrated-farm-s.firebaseapp.com",
+  projectId: "parah-integrated-farm-s",
+  storageBucket: "parah-integrated-farm-s.firebasestorage.app",
+  messagingSenderId: "529379479635",
+  appId: "1:529379479635:web:5234731e663c529e3676a6"
+  };
+
+  const app  = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db   = getFirestore(app);
+
+  // ── AUTH ──
+  onAuthStateChanged(auth, async user => {
+    if (user) {
+      const allowed = await isAllowed(user.email);
+      if (!allowed) {
+        showErr('Access denied. Your account is not authorised.');
+        await signOut(auth); return;
+      }
+      document.getElementById('loginScreen').style.display  = 'none';
+      document.getElementById('adminWrapper').style.display = 'block';
+      document.getElementById('adminUserLabel').textContent  = user.email;
+      loadAll();
+    } else {
+      document.getElementById('loginScreen').style.display  = 'flex';
+      document.getElementById('adminWrapper').style.display = 'none';
+    }
+  });
+
+  async function isAllowed(email) {
+    try {
+      const snap = await getDoc(doc(db,'settings','admins'));
+      if (!snap.exists()) return true; // first-time setup — let owner through
+      return (snap.data().emails || []).includes(email);
+    } catch { return true; }
+  }
+
+  window.adminLogin = async function() {
+    const email = document.getElementById('loginEmail').value.trim();
+    const pass  = document.getElementById('loginPassword').value;
+    if (!email || !pass) { showErr('Enter your email and password.'); return; }
+    try {
+      await signInWithEmailAndPassword(auth, email, pass);
+    } catch(e) { showErr('Login failed. Check your credentials.'); }
+  };
+  window.adminLogout = () => signOut(auth);
+
+  function showErr(msg) {
+    const el = document.getElementById('loginError');
+    el.textContent = msg; el.style.display = 'block';
+  }
+
+  // ── STATE ──
+  let _orders = [];
+
+  async function loadAll() {
+    await Promise.all([loadOrders(), loadApplications(), loadMessages(), loadProducts(), loadSettings(), loadVisitors(), loadReviews()]);
+    buildRevenue();
+  }
+
+  // ── VISITORS ──
+  async function loadVisitors() {
+    try {
+      const snap = await getDoc(doc(db,'stats','visitors'));
+      const total = snap.exists() ? (snap.data().total || 0) : 0;
+      document.getElementById('dVisitors').textContent  = total.toLocaleString();
+      if (document.getElementById('rvVisitors'))
+        document.getElementById('rvVisitors').textContent = total.toLocaleString();
+    } catch(e) { console.log(e); }
+  }
+
+  // ── REVIEWS ──
+  async function loadReviews() {
+    try {
+      const snap = await getDocs(query(collection(db,'reviews'), orderBy('createdAt','desc')));
+      const rows = [];
+      snap.forEach(d => rows.push({id:d.id,...d.data()}));
+
+      document.getElementById('rvBadge').textContent = rows.length;
+      if (document.getElementById('rvTotal'))
+        document.getElementById('rvTotal').textContent = rows.length;
+
+      if (rows.length > 0) {
+        const avg = (rows.reduce((s,r)=>s+r.rating,0)/rows.length).toFixed(1);
+        if (document.getElementById('rvAvg'))
+          document.getElementById('rvAvg').textContent = avg + ' ⭐';
+      }
+
+      document.getElementById('reviewsBody').innerHTML = rows.map(r => `
+        <tr>
+          <td>${fmtDate(r.createdAt)}</td>
+          <td><strong>${r.name}</strong></td>
+          <td style="color:#f59e0b;font-size:1rem;">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)} <small style="color:var(--text-light)">(${r.rating}/5)</small></td>
+          <td style="max-width:280px;">${r.comment}</td>
+          <td><button class="ab ab-re" onclick="del('reviews','${r.id}')">Delete</button></td>
+        </tr>`).join('') || '<tr class="empty-row"><td colspan="5">No reviews yet.</td></tr>';
+    } catch(e) { console.log(e); }
+  }
+
+  // ── ORDERS ──
+  async function loadOrders() {
+    const snap = await getDocs(query(collection(db,'orders'), orderBy('createdAt','desc')));
+    _orders = [];
+    snap.forEach(d => _orders.push({ id: d.id, ...d.data() }));
+
+    const pending = _orders.filter(r => r.status === 'pending').length;
+    document.getElementById('dOrders').textContent  = _orders.length;
+    document.getElementById('dPending').textContent = pending;
+    document.getElementById('ordBadge').textContent = pending;
+
+    // Recent 5 on dashboard
+    const recent = _orders.slice(0,5);
+    document.getElementById('recentOrders').innerHTML = recent.length
+      ? `<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;">
+          <thead><tr style="background:var(--off-white);">
+            ${['Date','Customer','Product','Total','Status'].map(h=>`<th style="padding:10px 14px;font-size:0.70rem;text-transform:uppercase;color:var(--text-light);">${h}</th>`).join('')}
+          </tr></thead>
+          <tbody>${recent.map(r=>`<tr>
+            <td style="padding:11px 14px;font-size:0.83rem;border-bottom:1px solid var(--border);">${fmtDate(r.createdAt)}</td>
+            <td style="padding:11px 14px;font-size:0.83rem;border-bottom:1px solid var(--border);"><strong>${r.customerName||'—'}</strong></td>
+            <td style="padding:11px 14px;font-size:0.83rem;border-bottom:1px solid var(--border);">${r.product}</td>
+            <td style="padding:11px 14px;font-size:0.83rem;border-bottom:1px solid var(--border);">₦${(r.total||0).toLocaleString()}</td>
+            <td style="padding:11px 14px;font-size:0.83rem;border-bottom:1px solid var(--border);"><span class="status-badge sb-${r.status}">${r.status}</span></td>
+          </tr>`).join('')}</tbody>
+        </table></div>`
+      : '<div style="text-align:center;padding:36px;color:var(--text-light);">No orders yet.</div>';
+
+    // Full orders table
+    document.getElementById('ordersBody').innerHTML = _orders.map(r => `
+      <tr>
+        <td>${fmtDate(r.createdAt)}</td>
+        <td><strong>${r.customerName||'—'}</strong>${r.email?`<br/><small style="color:var(--text-light)">${r.email}</small>`:''}</td>
+        <td><a href="tel:${r.phone}">${r.phone}</a></td>
+        <td>${r.product}</td>
+        <td>${r.quantity}</td>
+        <td>₦${(r.total||0).toLocaleString()}</td>
+        <td>${r.delivery==='delivery'?'🚚 Delivery':'🏠 Pickup'}${r.address?`<br/><small style="color:var(--text-light);font-size:0.76rem;">${r.address}</small>`:''}</td>
+        <td><span class="status-badge sb-${r.status}">${r.status}</span></td>
+        <td>
+          <button class="ab ab-gr" onclick="upd('orders','${r.id}','confirmed')">Confirm</button>
+          <button class="ab ab-bl" onclick="upd('orders','${r.id}','completed')">Complete</button>
+          <button class="ab ab-re" onclick="del('orders','${r.id}')">Delete</button>
+        </td>
+      </tr>`).join('') || '<tr class="empty-row"><td colspan="9">No orders yet.</td></tr>';
+  }
+
+  // ── REVENUE ──
+  function buildRevenue() {
+    const now   = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const wkSt  = new Date(today); wkSt.setDate(today.getDate() - today.getDay());
+    const mSt   = new Date(now.getFullYear(), now.getMonth(), 1);
+
+    let tRev=0,tCnt=0, wRev=0,wCnt=0, mRev=0,mCnt=0;
+    const byP={}, byM={};
+
+    _orders.forEach(r => {
+      if (r.status==='cancelled') return;
+      const d   = r.createdAt ? new Date(r.createdAt.seconds*1000) : null;
+      const tot = r.total||0;
+      if(d){ if(d>=today){tRev+=tot;tCnt++;} if(d>=wkSt){wRev+=tot;wCnt++;} if(d>=mSt){mRev+=tot;mCnt++;}
+        const mk = d.toLocaleString('default',{month:'long',year:'numeric'});
+        byM[mk] = byM[mk]||{o:0,r:0}; byM[mk].o++; byM[mk].r+=tot;
+      }
+      const p=r.product||'Unknown';
+      byP[p]=byP[p]||{o:0,u:0,r:0}; byP[p].o++; byP[p].u+=(r.quantity||1); byP[p].r+=tot;
+    });
+
+    document.getElementById('revToday').textContent  = '₦'+tRev.toLocaleString();
+    document.getElementById('revTodayC').textContent = tCnt+' order'+(tCnt!==1?'s':'');
+    document.getElementById('revWeek').textContent   = '₦'+wRev.toLocaleString();
+    document.getElementById('revWeekC').textContent  = wCnt+' order'+(wCnt!==1?'s':'');
+    document.getElementById('revMonth').textContent  = '₦'+mRev.toLocaleString();
+    document.getElementById('revMonthC').textContent = mCnt+' order'+(mCnt!==1?'s':'');
+
+    document.getElementById('revByProduct').innerHTML =
+      Object.entries(byP).sort((a,b)=>b[1].r-a[1].r)
+        .map(([p,v])=>`<tr><td><strong>${p}</strong></td><td>${v.o}</td><td>${v.u}</td><td>₦${v.r.toLocaleString()}</td></tr>`).join('')
+      || '<tr class="empty-row"><td colspan="4">No data yet.</td></tr>';
+
+    document.getElementById('revMonthly').innerHTML =
+      Object.entries(byM).map(([m,v])=>`<tr><td>${m}</td><td>${v.o}</td><td>₦${v.r.toLocaleString()}</td></tr>`).join('')
+      || '<tr class="empty-row"><td colspan="3">No data yet.</td></tr>';
+  }
+
+  // ── PRODUCTS ──
+  window._pEmoji = '🥚';
+  window._pColor = 'linear-gradient(135deg,#fff8e1,#ffe082)';
+
+  async function loadProducts() {
+    const snap = await getDocs(query(collection(db,'products'), orderBy('createdAt','asc')));
+    const rows = [];
+    snap.forEach(d => rows.push({id:d.id,...d.data()}));
+
+    document.getElementById('productsBody').innerHTML = rows.map(r => `
+      <tr>
+        <td style="font-size:1.5rem;">${r.icon||'🥚'}</td>
+        <td><strong>${r.name}</strong></td>
+        <td>₦${Number(r.price).toLocaleString()}</td>
+        <td>${r.unit}</td>
+        <td style="max-width:180px;">${r.description}</td>
+        <td>
+          <button class="ab ab-go" onclick='editProduct(${JSON.stringify(r)})'>Edit</button>
+          <button class="ab ab-re" onclick="del('products','${r.id}')">Delete</button>
+        </td>
+      </tr>`).join('') || '<tr class="empty-row"><td colspan="6">No products yet. Add one!</td></tr>';
+  }
+
+  window.saveProduct = async function() {
+    const name  = document.getElementById('pName').value.trim();
+    const price = document.getElementById('pPrice').value;
+    const unit  = document.getElementById('pUnit').value.trim();
+    const desc  = document.getElementById('pDesc').value.trim();
+    const eid   = document.getElementById('pEditId').value;
+    if (!name||!price||!unit||!desc) { showToast('Fill in all product fields.','error'); return; }
+    const data = { name, price:Number(price), unit, description:desc, icon:window._pEmoji, color:window._pColor };
+    try {
+      if (eid) { await updateDoc(doc(db,'products',eid), data); showToast('Product updated!','success'); }
+      else      { await addDoc(collection(db,'products'), {...data, createdAt:serverTimestamp()}); showToast('Product added! Live on the website now.','success'); }
+      resetPF(); loadProducts();
+    } catch(e){ showToast('Error: '+e.message,'error'); }
+  };
+
+  window.editProduct = function(r) {
+    document.getElementById('pEditId').value = r.id;
+    document.getElementById('pName').value   = r.name;
+    document.getElementById('pPrice').value  = r.price;
+    document.getElementById('pUnit').value   = r.unit;
+    document.getElementById('pDesc').value   = r.description;
+    document.getElementById('pfTitle').textContent = '✏️ Edit Product';
+    window._pEmoji = r.icon;
+    window._pColor = r.color;
+    document.getElementById('pfTitle').scrollIntoView({behavior:'smooth'});
+  };
+
+  window.resetPF = function() {
+    document.getElementById('pEditId').value = '';
+    ['pName','pPrice','pUnit','pDesc'].forEach(id => document.getElementById(id).value='');
+    document.getElementById('pfTitle').textContent = '➕ Add New Product';
+  };
+
+  // ── APPLICATIONS ──
+  async function loadApplications() {
+    const snap = await getDocs(query(collection(db,'job_applications'), orderBy('createdAt','desc')));
+    const rows = [];
+    snap.forEach(d => rows.push({id:d.id,...d.data()}));
+    document.getElementById('dApps').textContent    = rows.length;
+    document.getElementById('appBadge').textContent = rows.filter(r=>r.status==='pending').length;
+    document.getElementById('appsBody').innerHTML   = rows.map(r => `
+      <tr>
+        <td>${fmtDate(r.createdAt)}</td>
+        <td><strong>${r.firstName} ${r.lastName}</strong></td>
+        <td><a href="tel:${r.phone}">${r.phone}</a></td>
+        <td>${r.position}</td>
+        <td>${r.experience||'—'}</td>
+        <td>${r.availability||'—'}</td>
+        <td><span class="status-badge sb-${r.status}">${r.status}</span></td>
+        <td>
+          <button class="ab ab-gr" onclick="upd('job_applications','${r.id}','shortlisted')">Shortlist</button>
+          <button class="ab ab-re" onclick="del('job_applications','${r.id}')">Delete</button>
+        </td>
+      </tr>`).join('') || '<tr class="empty-row"><td colspan="8">No applications yet.</td></tr>';
+  }
+
+  // ── MESSAGES ──
+  async function loadMessages() {
+    const snap = await getDocs(query(collection(db,'messages'), orderBy('createdAt','desc')));
+    const rows = [];
+    snap.forEach(d => rows.push({id:d.id,...d.data()}));
+    const unread = rows.filter(r=>r.status==='unread').length;
+    document.getElementById('dMsgs').textContent    = unread;
+    document.getElementById('msgBadge').textContent = unread;
+    document.getElementById('msgsBody').innerHTML   = rows.map(r => `
+      <tr>
+        <td>${fmtDate(r.createdAt)}</td>
+        <td><strong>${r.name}</strong></td>
+        <td><a href="tel:${r.phone}">${r.phone}</a></td>
+        <td>${r.subject||'—'}</td>
+        <td style="max-width:200px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${r.message}</td>
+        <td><span class="status-badge ${r.status==='unread'?'sb-unread':'sb-read'}">${r.status}</span></td>
+        <td>
+          <button class="ab ab-gr" onclick="upd('messages','${r.id}','read')">Mark Read</button>
+          <button class="ab ab-re" onclick="del('messages','${r.id}')">Delete</button>
+        </td>
+      </tr>`).join('') || '<tr class="empty-row"><td colspan="7">No messages yet.</td></tr>';
+  }
+
+  // ── SETTINGS ──
+  async function loadSettings() {
+    const snap  = await getDoc(doc(db,'settings','admins'));
+    const data  = snap.exists() ? snap.data() : {emails:[],roles:{},limit:5};
+    const emails = data.emails||[], roles=data.roles||{}, limit=data.limit||5;
+    document.getElementById('adminCount').textContent = emails.length;
+    document.getElementById('adminLimit').textContent = limit;
+    document.getElementById('newLimit').value         = limit;
+    document.getElementById('adminList').innerHTML    = emails.length
+      ? emails.map(e=>`<li>
+          <div>
+            <div class="em">${e}</div>
+            <span class="role-tag ${roles[e]==='Owner'?'owner':''}">${roles[e]||'Admin'}</span>
+          </div>
+          <button class="ab ab-re" onclick="removeAdmin('${e}')">Remove</button>
+        </li>`).join('')
+      : '<li style="color:var(--text-light);font-size:0.82rem;padding:8px 0;">No admins configured yet.</li>';
+    document.getElementById('addAdminForm').style.display = emails.length>=limit ? 'none' : 'block';
+  }
+
+  window.addAdmin = async function() {
+    const email = document.getElementById('newEmail').value.trim().toLowerCase();
+    const role  = document.getElementById('newRole').value.trim()||'Admin';
+    if (!email) { showToast('Enter an email address.','error'); return; }
+    const snap = await getDoc(doc(db,'settings','admins'));
+    const data = snap.exists() ? snap.data() : {emails:[],roles:{},limit:5};
+    if (data.emails.includes(email)) { showToast('Already an admin.','error'); return; }
+    if (data.emails.length >= (data.limit||5)) { showToast(`Limit (${data.limit||5}) reached. Increase the limit first.`,'error'); return; }
+    data.emails.push(email); data.roles[email]=role;
+    await setDoc(doc(db,'settings','admins'), data);
+    showToast('Admin added!','success');
+    document.getElementById('newEmail').value=''; document.getElementById('newRole').value='';
+    loadSettings();
+  };
+
+  window.removeAdmin = async function(email) {
+    if (!confirm(`Remove ${email}?`)) return;
+    const snap = await getDoc(doc(db,'settings','admins'));
+    const data = snap.data();
+    data.emails = data.emails.filter(e=>e!==email); delete data.roles[email];
+    await setDoc(doc(db,'settings','admins'), data);
+    showToast('Admin removed.','success'); loadSettings();
+  };
+
+  window.updateLimit = async function() {
+    const val = parseInt(document.getElementById('newLimit').value);
+    if (!val||val<1) { showToast('Enter a valid number.','error'); return; }
+    const snap = await getDoc(doc(db,'settings','admins'));
+    const data = snap.exists() ? snap.data() : {emails:[],roles:{}};
+    data.limit = val;
+    await setDoc(doc(db,'settings','admins'), data);
+    showToast(`Limit updated to ${val}.`,'success'); loadSettings();
+  };
+
+  // ── HELPERS ──
+  window.upd = async function(col,id,status) {
+    try { await updateDoc(doc(db,col,id),{status}); showToast('Updated!','success'); loadAll(); }
+    catch(e){ showToast('Error: '+e.message,'error'); }
+  };
+
+  window.del = async function(col,id) {
+    if (!confirm('Delete this record permanently?')) return;
+    try { await deleteDoc(doc(db,col,id)); showToast('Deleted.','success'); loadAll(); }
+    catch(e){ showToast('Error: '+e.message,'error'); }
+  };
+
+  function fmtDate(ts) {
+    return ts ? new Date(ts.seconds*1000).toLocaleDateString() : '—';
+  }
+</script>
+
+<script>
+  function showTab(name) {
+    document.querySelectorAll('.tab-content').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.sb-menu a').forEach(a=>a.classList.remove('active'));
+    document.getElementById('tab-'+name).classList.add('active');
+    document.getElementById('nav-'+name).classList.add('active');
+  }
+
+  function filterTable(id, q) {
+    document.querySelectorAll('#'+id+' tbody tr').forEach(r=>{
+      r.style.display = r.textContent.toLowerCase().includes(q.toLowerCase()) ? '' : 'none';
+    });
+  }
+
+  function pickEmoji(el, e) {
+    document.querySelectorAll('.ep').forEach(x=>x.classList.remove('sel'));
+    el.classList.add('sel'); window._pEmoji = e;
+  }
+
+  function pickColor(el, c) {
+    document.querySelectorAll('.cp').forEach(x=>x.classList.remove('sel'));
+    el.classList.add('sel'); window._pColor = c;
+  }
+
+  function showToast(msg, type='success') {
+    const t = document.getElementById('toast');
+    t.textContent=msg; t.className='toast '+type;
+    t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'), 4000);
+  }
+  window.showToast = showToast;
+</script>
+<a href="index.html" style="display:block;text-align:center;padding:16px;color:#ff7200;font-size:14px;">← Back to Home</a>
+</body>
+</html>
