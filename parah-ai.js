@@ -2,12 +2,12 @@
 // No custom backend server needed — this calls Gemini directly through
 // the PARAH INTEGRATED FARM'S Firebase project using the free Gemini
 // Developer API (Spark plan). Reuses the same project as admin.html.
- 
+
 import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app-check.js";
 import { getAI, getGenerativeModel, GoogleAIBackend } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-ai.js";
- 
-// Reuse the same config as auth.js. Keep this in sync if it ever changes.
+
+// Same config as admin.html. Keep this in sync if it ever changes.
 const firebaseConfig = {
   apiKey: "AIzaSyDftNbRLydAWxC6p0xLmu2lhT3izgGvvns",
   authDomain: "parah-integrated-farm-s.firebaseapp.com",
@@ -16,10 +16,17 @@ const firebaseConfig = {
   messagingSenderId: "529379479635",
   appId: "1:529379479635:web:5234731e663c529e3676a6"
 };
- 
-// Avoid re-initializing if another script (like auth.js) already did.
+
+// Avoid re-initializing if another script (like a future auth.js) already did.
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
- 
+
+// 🔧 App Check enforcement is on for AI Logic, registered with reCAPTCHA v3
+// (Firebase Console → App Check → Apps → Parah Integrated Farm's → "reCAPTCHA" chip).
+initializeAppCheck(app, {
+  provider: new ReCaptchaV3Provider("6LccanAtAAAAAc9Vhbb6KAlSZJEBgOOc39Fz2Bg"),
+  isTokenAutoRefreshEnabled: true
+});
+
 const ai = getAI(app, { backend: new GoogleAIBackend() });
 const model = getGenerativeModel(ai, {
   model: "gemini-3.6-flash",
@@ -46,8 +53,7 @@ const sendBtn = document.getElementById("parah-ai-send");
 const input = document.getElementById("parah-ai-input");
 const messages = document.getElementById("parah-ai-messages");
 
- 
-iBtn.addEventListener("click", () => {
+aiBtn.addEventListener("click", () => {
   aiChat.classList.toggle("hidden");
   if (!aiChat.classList.contains("hidden")) {
     input.focus();
@@ -57,16 +63,16 @@ iBtn.addEventListener("click", () => {
     }
   }
 });
- 
+
 closeBtn.addEventListener("click", () => {
   aiChat.classList.add("hidden");
 });
- 
+
 sendBtn.addEventListener("click", sendMessage);
 input.addEventListener("keydown", (e) => {
   if (e.key === "Enter") sendMessage();
 });
- 
+
 function addMessage(text, sender) {
   const div = document.createElement("div");
   div.className = sender === "user" ? "parah-ai-msg user" : "parah-ai-msg";
@@ -75,17 +81,17 @@ function addMessage(text, sender) {
   messages.scrollTop = messages.scrollHeight;
   return div;
 }
- 
+
 async function sendMessage() {
   const text = input.value.trim();
   if (!text) return;
- 
+
   addMessage(text, "user");
   input.value = "";
- 
+
   const typingDiv = addMessage("…", "ai");
 
- try {
+  try {
     const result = await model.generateContent(text);
     const reply = result.response.text();
     typingDiv.textContent = reply || "Sorry, I didn't get a response.";
@@ -94,5 +100,3 @@ async function sendMessage() {
     typingDiv.textContent = "⚠️ Couldn't reach the AI right now. Please try again later.";
   }
 }
-
- 
