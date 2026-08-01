@@ -1,18 +1,20 @@
-// ===== KSOME AI Chat Widget (powered by Firebase AI Logic + Gemini) =====
+// ===== PARAH AI Chat Widget (powered by Firebase AI Logic + Gemini) =====
 // No custom backend server needed — this calls Gemini directly through
-// your Firebase project using the free Gemini Developer API (Spark plan).
+// the PARAH INTEGRATED FARM'S Firebase project using the free Gemini
+// Developer API (Spark plan). Reuses the same project as admin.html.
  
 import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app-check.js";
 import { getAI, getGenerativeModel, GoogleAIBackend } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-ai.js";
  
 // Reuse the same config as auth.js. Keep this in sync if it ever changes.
 const firebaseConfig = {
-   apiKey: "AIzaSyC1LV-g2H3yKs_6nbruF1TEbCoV34UX0jI",
-  authDomain: "ksome-website.firebaseapp.com",
-  projectId: "ksome-website",
-  storageBucket: "ksome-website.appspot.com",
-  messagingSenderId: "970299265208",
-  appId: "1:970299265208:web:870e4de77e51e9032e644d"
+  apiKey: "AIzaSyDftNbRLydAWxC6p0xLmu2lhT3izgGvvns",
+  authDomain: "parah-integrated-farm-s.firebaseapp.com",
+  projectId: "parah-integrated-farm-s",
+  storageBucket: "parah-integrated-farm-s.firebasestorage.app",
+  messagingSenderId: "529379479635",
+  appId: "1:529379479635:web:5234731e663c529e3676a6"
 };
  
 // Avoid re-initializing if another script (like auth.js) already did.
@@ -22,20 +24,38 @@ const ai = getAI(app, { backend: new GoogleAIBackend() });
 const model = getGenerativeModel(ai, {
   model: "gemini-3.6-flash",
   systemInstruction:
-    "You are KSOME AI, a friendly assistant for the KSOME Livestreaming & Video Edit Course website. " +
-    "Answer questions about the courses, services, booking, and enrollment. Keep replies short and helpful."
+    "You are PARAH AI, a friendly assistant for PARAH INTEGRATED FARM'S, a poultry and farm-products business in Nigeria. " +
+    "You help visitors with questions about products, prices, ordering, jobs, and contact info. " +
+    "Here is what you should know:\n" +
+    "PRODUCTS:\n" +
+    "- Fresh Table Eggs: ₦5,500–₦6,500 per crate (30 eggs), price varies by size\n" +
+    "- Live Broiler Chickens: ₦9,500 per bird (avg. 3kg)\n" +
+    "- Rabbit: ₦8,000 per rabbit, vaccinated and certified\n" +
+    "- Organic Poultry Manure: ₦3,000 per 50kg bag\n" +
+    "ORDERING: Customers order through the 'Order' page on the website (order.html), for pickup or delivery.\n" +
+    "JOBS: Job seekers can apply through the 'Jobs' page (jobs.html).\n" +
+    "CONTACT: Phone 08067033288, 08062301723, 07049069026; WhatsApp available; email info@parahventures.com.\n" +
+    "Keep replies short, warm, and helpful. If you don't know something specific (like live stock availability), " +
+    "politely suggest the visitor contact the farm directly or place an order to confirm."
 });
+
+const aiBtn = document.getElementById("parah-ai-btn");
+const aiChat = document.getElementById("parah-ai-chat");
+const closeBtn = document.getElementById("close-parah-ai");
+const sendBtn = document.getElementById("parah-ai-send");
+const input = document.getElementById("parah-ai-input");
+const messages = document.getElementById("parah-ai-messages");
+
  
-const aiBtn = document.getElementById("ksome-ai-btn");
-const aiChat = document.getElementById("ksome-ai-chat");
-const closeBtn = document.getElementById("close-ai");
-const sendBtn = document.getElementById("send-ai");
-const input = document.getElementById("user-message");
-const messages = document.getElementById("ai-messages");
- 
-aiBtn.addEventListener("click", () => {
+iBtn.addEventListener("click", () => {
   aiChat.classList.toggle("hidden");
-  if (!aiChat.classList.contains("hidden")) input.focus();
+  if (!aiChat.classList.contains("hidden")) {
+    input.focus();
+    if (!messages.dataset.greeted) {
+      addMessage("👋 Hello! I'm PARAH AI. Ask me about our products, prices, or how to order!", "ai");
+      messages.dataset.greeted = "1";
+    }
+  }
 });
  
 closeBtn.addEventListener("click", () => {
@@ -49,7 +69,7 @@ input.addEventListener("keydown", (e) => {
  
 function addMessage(text, sender) {
   const div = document.createElement("div");
-  div.className = sender === "user" ? "ai-message user" : "ai-message";
+  div.className = sender === "user" ? "parah-ai-msg user" : "parah-ai-msg";
   div.textContent = text;
   messages.appendChild(div);
   messages.scrollTop = messages.scrollHeight;
@@ -64,14 +84,15 @@ async function sendMessage() {
   input.value = "";
  
   const typingDiv = addMessage("…", "ai");
- 
-  try {
+
+ try {
     const result = await model.generateContent(text);
     const reply = result.response.text();
     typingDiv.textContent = reply || "Sorry, I didn't get a response.";
   } catch (err) {
-    console.error("KSOME AI error:", err);
+    console.error("PARAH AI error:", err);
     typingDiv.textContent = "⚠️ Couldn't reach the AI right now. Please try again later.";
   }
 }
+
  
