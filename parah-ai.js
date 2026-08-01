@@ -9,7 +9,7 @@ import { getAI, getGenerativeModel, GoogleAIBackend } from "https://www.gstatic.
 
 // Same config as admin.html. Keep this in sync if it ever changes.
 const firebaseConfig = {
-  apiKey: "AIzaSyDftNbRLydAWxC6p0xLmu2lhT3izgGvvns",
+      apiKey: "AIzaSyDftNbRLydAWxC6p0xLmu2lhT3izgGvvns",
   authDomain: "parah-integrated-farm-s.firebaseapp.com",
   projectId: "parah-integrated-farm-s",
   storageBucket: "parah-integrated-farm-s.firebasestorage.app",
