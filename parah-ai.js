@@ -4,6 +4,7 @@
 // Developer API (Spark plan). Reuses the same project as admin.html.
 
 import { initializeApp, getApps, getApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
+import { initializeAppCheck, ReCaptchaEnterpriseProvider } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app-check.js";
 import { getAI, getGenerativeModel, GoogleAIBackend } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-ai.js";
 
 // Same config as admin.html. Keep this in sync if it ever changes.
@@ -18,6 +19,13 @@ const firebaseConfig = {
 
 // Avoid re-initializing if another script (like a future auth.js) already did.
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+
+// 🔧 App Check enforcement is on for AI Logic, registered with reCAPTCHA Enterprise
+// (confirmed in Firebase Console → App Check → Apps → Parah Integrated Farm's).
+initializeAppCheck(app, {
+  provider: new ReCaptchaEnterpriseProvider("6LfoWXAtAAAAAJlu1c3i6j5lDpz0ShDQGh2FtOMy"),
+  isTokenAutoRefreshEnabled: true
+});
 
 const ai = getAI(app, { backend: new GoogleAIBackend() });
 const model = getGenerativeModel(ai, {
