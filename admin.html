@@ -42,6 +42,13 @@
     .admin-nav .right { display:flex; align-items:center; gap:12px; }
     .admin-nav .admin-user { font-size:0.80rem; color:rgba(255,255,255,0.60); }
 
+    /* Hamburger — hidden on desktop, shown on tablet/phone */
+    .nav-toggle {
+      display:none; background:none; border:none; cursor:pointer;
+      color:var(--white); font-size:1.3rem; padding:4px 6px; margin-right:6px;
+      line-height:1;
+    }
+
     .admin-layout {
       display:grid; grid-template-columns:230px 1fr;
       min-height:calc(100vh - 62px);
@@ -52,6 +59,12 @@
       background:var(--white); padding:20px 0;
       border-right:1px solid var(--border);
       position:sticky; top:62px; height:calc(100vh - 62px); overflow-y:auto;
+    }
+
+    /* Backdrop shown behind the sidebar when it's open as an overlay on mobile */
+    .sidebar-backdrop {
+      display:none; position:fixed; inset:0; top:62px;
+      background:rgba(0,0,0,0.35); z-index:150;
     }
     .sb-label {
       font-size:0.68rem; font-weight:700; letter-spacing:0.14em;
@@ -202,17 +215,35 @@
     }
 
     @media(max-width:900px){
+      .nav-toggle { display:inline-block; }
+      .admin-nav .brand span.brand-full { display:none; }
       .admin-layout { grid-template-columns:1fr; }
-      .admin-sidebar { display:none; }
-      .stats-grid { grid-template-columns:1fr 1fr; }
+
+      /* Sidebar becomes an off-canvas panel instead of vanishing */
+      .admin-sidebar {
+        position:fixed; top:62px; left:0; bottom:0; width:230px;
+        z-index:200; transform:translateX(-100%);
+        transition:transform 0.22s ease; box-shadow:2px 0 16px rgba(0,0,0,0.15);
+      }
+      .admin-sidebar.open { display:block; transform:translateX(0); }
+      .admin-wrapper.sidebar-open .sidebar-backdrop { display:block; }
+
+      .stats-grid,
+      .stats-grid[style] { grid-template-columns:1fr 1fr !important; }
       .rev-grid { grid-template-columns:1fr; }
       .pm-grid { grid-template-columns:1fr; }
       .settings-grid { grid-template-columns:1fr; }
     }
     @media(max-width:540px){
-      .stats-grid { grid-template-columns:1fr; }
+      .stats-grid,
+      .stats-grid[style] { grid-template-columns:1fr !important; }
       .admin-main { padding:16px; }
       .login-card { padding:32px 22px; }
+      .admin-nav { padding:0 14px; }
+      .admin-nav .right .btn-outline:not(:last-child) span.btn-text { display:none; }
+      .admin-nav .admin-user { display:none; }
+      .table-header { flex-direction:column; align-items:stretch; }
+      .search-input { width:100%; }
     }
   </style>
 </head>
@@ -243,11 +274,14 @@
 
   <!-- TOP NAV -->
   <nav class="admin-nav">
-    <div class="brand">🌿 PARAH FARM — Admin Panel</div>
+    <div style="display:flex;align-items:center;">
+      <button class="nav-toggle" id="navToggle" onclick="toggleSidebar()" aria-label="Open menu">☰</button>
+      <div class="brand">🌿 <span class="brand-full">PARAH FARM — Admin Panel</span></div>
+    </div>
     <div class="right">
       <span class="admin-user" id="adminUserLabel"></span>
       <a href="index.html" target="_blank" class="btn btn-outline"
-         style="padding:6px 13px;font-size:0.78rem;">View Site ↗</a>
+         style="padding:6px 13px;font-size:0.78rem;"><span class="btn-text">View Site </span>↗</a>
       <button class="btn btn-outline" style="padding:6px 13px;font-size:0.78rem;"
               onclick="adminLogout()">Logout</button>
     </div>
@@ -255,8 +289,11 @@
 
   <div class="admin-layout">
 
+    <!-- Tap outside the sidebar to close it (mobile only) -->
+    <div class="sidebar-backdrop" id="sidebarBackdrop" onclick="toggleSidebar(false)"></div>
+
     <!-- SIDEBAR -->
-    <div class="admin-sidebar">
+    <div class="admin-sidebar" id="adminSidebar">
       <div class="sb-label">Overview</div>
       <ul class="sb-menu">
         <li><a id="nav-dashboard"    onclick="showTab('dashboard')"    class="active">📊 Dashboard</a></li>
@@ -1000,7 +1037,16 @@
     document.querySelectorAll('.sb-menu a').forEach(a=>a.classList.remove('active'));
     document.getElementById('tab-'+name).classList.add('active');
     document.getElementById('nav-'+name).classList.add('active');
+    toggleSidebar(false); // auto-close the off-canvas menu on mobile after picking a tab
   }
+
+  function toggleSidebar(force) {
+    const sb = document.getElementById('adminSidebar');
+    const open = typeof force === 'boolean' ? force : !sb.classList.contains('open');
+    sb.classList.toggle('open', open);
+    document.getElementById('adminWrapper').classList.toggle('sidebar-open', open);
+  }
+  window.toggleSidebar = toggleSidebar;
 
   function filterTable(id, q) {
     document.querySelectorAll('#'+id+' tbody tr').forEach(r=>{
